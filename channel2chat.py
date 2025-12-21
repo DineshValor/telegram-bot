@@ -12,6 +12,7 @@ CHANNEL_TOPIC_MAP = {
     "IUENG": 11079,   # Ingress Updates topic ID
     "IWWC2025": 11079,  # Ingress Updates topic ID
     "HackventscalendarNews": 11079, # Ingress Updates topic ID
+    "dineshvalorchannel": 11079, # Test Updates
 }
 
 client = TelegramClient("user_session", api_id, api_hash)
