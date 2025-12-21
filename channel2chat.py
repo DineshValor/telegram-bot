@@ -6,10 +6,10 @@ api_hash = "e994452a74a2e0a053827d0f63e4c3b0"
 TARGET_GROUP = -1002303286535  # forum group ID
 
 CHANNEL_TOPIC_MAP = {
-    "NotNianticUpdates": 11079, # Ingress Updates topic ID
+    "NotNianticUpdates": 1, # Ingress Updates topic ID
     "IngressFSNews": 15,        # First Saturday topic ID
     "NianticOfficial": 11079,   # Ingress Updates topic ID
-    "IUENG": 11079,   # Ingress Updates topic ID
+    "IUENG": 1,   # Ingress Updates topic ID
     "IWWC2025": 1,  # Ingress Updates topic ID
     "HackventscalendarNews": 1, # Ingress Updates topic ID
     "IngressMissionAddicts": 8201, # Mission Banners topic ID
