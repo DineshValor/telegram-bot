@@ -22,10 +22,10 @@ async def handler(event):
     topic_id = CHANNEL_TOPIC_MAP.get(event.chat.username)
 
     await client.send_message(
-        TARGET_GROUP,
-        event.message,
-        message_thread_id=topic_id
-    )
+    TARGET_GROUP,
+    event.message,
+    reply_to=topic_id
+)
 
 client.start()
 print("✅ Forwarding to specific topics...")
