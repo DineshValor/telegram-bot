@@ -10,8 +10,8 @@ CHANNEL_TOPIC_MAP = {
     "IngressFSNews": 15,        # First Saturday topic ID
     "NianticOfficial": 11079,   # Ingress Updates topic ID
     "IUENG": 11079,   # Ingress Updates topic ID
-    "IWWC2025": 11079,  # Ingress Updates topic ID
-    "HackventscalendarNews": 11079, # Ingress Updates topic ID
+    "IWWC2025": 1,  # Ingress Updates topic ID
+    "HackventscalendarNews": 1, # Ingress Updates topic ID
     "dineshvalorchannel": 1, # Test Updates
 }
 
