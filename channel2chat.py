@@ -1,7 +1,7 @@
 from telethon import TelegramClient, events
 
-api_id = 24474379
-api_hash = "e994452a74a2e0a053827d0f63e4c3b0"
+api_id = 22996249
+api_hash = "e982daed463e4c9826c6c9ba828c2c37"
 
 TARGET_GROUP = -1002303286535  # forum group ID
 
