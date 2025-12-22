@@ -4,7 +4,7 @@ from telethon.tl.types import MessageMediaPhoto, MessageMediaDocument
 api_id = 22996249
 api_hash = "e982daed463e4c9826c6c9ba828c2c37"
 
-TARGET_GROUP = -1002303286535 # Ingress India 🇮🇳
+TARGET_GROUP = -1002303286535 # Ingress India ðŸ‡®ðŸ‡³
 
 CHANNEL_TOPIC_MAP = {
     -1001268572490: 1, # Dinesh Valor Channel -> Ingress India / XFaction Chat
@@ -12,13 +12,13 @@ CHANNEL_TOPIC_MAP = {
     
     -1001305415858: 15, # IngressFS Notifications -> Ingress India / First Saturday
     
-    -1001008795454: 11079, # Passcodes Ingress PRIME ✳️ -> Ingress India / Ingress Updates
+    -1001008795454: 11079, # Passcodes Ingress PRIME âœ³ï¸ -> Ingress India / Ingress Updates
     -1001170454563: 11079, # Ingress -> Ingress India / Ingress Updates
     -1001126789733: 11079, # Ingress Passcodes -> -> Ingress India / Ingress Updates
     
     -1001075281753: 8201, # Mission Banners, Oh My! (Global XFAC [ENG]) -> Ingress India / Mission Banners
     -1001078001228: 8201, # [Global] #MissionProject -> Ingress India / Mission Banners
-    -1001420065662: 8201, # 📣 Ingress Mission Addicts -> -> Ingress India / Mission Banners
+    -1001420065662: 8201, # ðŸ“£ Ingress Mission Addicts -> -> Ingress India / Mission Banners
     
     -1002105354149: 1, # Ingress World Wide Competition 2025 -> Ingress India / XFaction Chat
     -1001167466234: 1, # NotNiantic Updates -> Ingress India / XFaction Chat
@@ -34,7 +34,7 @@ MEDIA_ONLY_CHANNELS = {
   -1003341948290, # Ingress India Test -> Ingress India / XFaction Chat
   -1001075281753, # Mission Banners, Oh My! (Global XFAC [ENG]) -> Ingress India / Mission Banners
   -1001078001228, # [Global] #MissionProject -> Ingress India / Mission Banners
-  -1001420065662, # 📣 Ingress Mission Addicts -> -> Ingress India / Mission Banners
+  -1001420065662, # ðŸ“£ Ingress Mission Addicts -> -> Ingress India / Mission Banners
   }
 ALLOWED_EXTENSIONS = {".jpeg", ".jpg", ".png", ".zip", ".rar"}
 
@@ -51,15 +51,20 @@ async def handler(event):
     msg = event.message
     media = msg.media
 
-    # 🚫 MEDIA-ONLY CHANNEL RULES
+    # 🚫 MEDIA-ONLY SOURCE CHANNELS
     if chat_id in MEDIA_ONLY_CHANNELS:
 
-        # ❌ Block photos
+        # ❌ Block text
+        if not media:
+            print("⛔ Blocked text in media-only channel")
+            return
+
+        # ❌ Block photos (single + gallery)
         if isinstance(media, MessageMediaPhoto):
             print("⛔ Blocked photo in media-only channel")
             return
 
-        # ✅ Allow documents with specific extensions
+        # ✅ Allow documents ONLY with allowed extensions
         if isinstance(media, MessageMediaDocument):
             filename = msg.file.name or ""
             ext = "." + filename.lower().split(".")[-1] if "." in filename else ""
@@ -68,25 +73,13 @@ async def handler(event):
                 print(f"⛔ Blocked file {filename}")
                 return
 
-        # ❌ Block text / anything else
-        elif not media:
-            print("⛔ Blocked non-media message")
+        # ❌ Block everything else
+        else:
+            print("⛔ Blocked unsupported media")
             return
 
-    # 🌐 NORMAL CHANNEL RULES
-    else:
-        # Allow photos
-        if isinstance(media, MessageMediaPhoto):
-            pass
-
-        # Allow documents with allowed extensions
-        elif isinstance(media, MessageMediaDocument):
-            filename = msg.file.name or ""
-            ext = "." + filename.lower().split(".")[-1] if "." in filename else ""
-
-            if ext not in ALLOWED_EXTENSIONS:
-                print(f"⛔ Blocked file {filename}")
-                return
+    # 🌐 NORMAL CHANNELS
+    # → NO FILTERING AT ALL (everything allowed)
 
     await client.send_message(
         TARGET_GROUP,
@@ -97,5 +90,5 @@ async def handler(event):
     print(f"✅ Forwarded from {chat_id}")
 
 client.start()
-print("🚀 ID-based forwarding working correctly")
+print("ðŸš€ ID-based forwarding working correctly")
 client.run_until_disconnected()
