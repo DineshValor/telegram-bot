@@ -51,24 +51,42 @@ async def handler(event):
     msg = event.message
     media = msg.media
 
-    # 📷 Allow photos
-    if isinstance(media, MessageMediaPhoto):
-        pass
+    # 🚫 MEDIA-ONLY CHANNEL RULES
+    if chat_id in MEDIA_ONLY_CHANNELS:
 
-    # 📦 Allow documents with specific extensions
-    elif isinstance(media, MessageMediaDocument):
-        filename = msg.file.name or ""
-        ext = "." + filename.lower().split(".")[-1] if "." in filename else ""
-
-        if ext not in ALLOWED_EXTENSIONS:
-            print(f"⛔ Blocked file {filename}")
+        # ❌ Block photos
+        if isinstance(media, MessageMediaPhoto):
+            print("⛔ Blocked photo in media-only channel")
             return
 
-    # 🚫 Block non-media in restricted channels
-    else:
-        if chat_id in MEDIA_ONLY_CHANNELS:
+        # ✅ Allow documents with specific extensions
+        if isinstance(media, MessageMediaDocument):
+            filename = msg.file.name or ""
+            ext = "." + filename.lower().split(".")[-1] if "." in filename else ""
+
+            if ext not in ALLOWED_EXTENSIONS:
+                print(f"⛔ Blocked file {filename}")
+                return
+
+        # ❌ Block text / anything else
+        elif not media:
             print("⛔ Blocked non-media message")
             return
+
+    # 🌐 NORMAL CHANNEL RULES
+    else:
+        # Allow photos
+        if isinstance(media, MessageMediaPhoto):
+            pass
+
+        # Allow documents with allowed extensions
+        elif isinstance(media, MessageMediaDocument):
+            filename = msg.file.name or ""
+            ext = "." + filename.lower().split(".")[-1] if "." in filename else ""
+
+            if ext not in ALLOWED_EXTENSIONS:
+                print(f"⛔ Blocked file {filename}")
+                return
 
     await client.send_message(
         TARGET_GROUP,
