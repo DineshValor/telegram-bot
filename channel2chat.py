@@ -14,7 +14,7 @@ CHANNEL_TOPIC_MAP = {
     
     -1001008795454: 11079, # Passcodes Ingress PRIME ✳️ -> Ingress India / Ingress Updates
     -1001170454563: 11079, # Ingress -> Ingress India / Ingress Updates
-    -1001126789733: 11079, Ingress Passcodes -> -> Ingress India / Ingress Updates
+    -1001126789733: 11079, # Ingress Passcodes -> -> Ingress India / Ingress Updates
     
     -1001075281753: 8201, # Mission Banners, Oh My! (Global XFAC [ENG]) -> Ingress India / Mission Banners
     -1001078001228: 8201, # [Global] #MissionProject -> Ingress India / Mission Banners
