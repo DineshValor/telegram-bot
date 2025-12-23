@@ -1,3 +1,4 @@
+import asyncio
 from telethon import TelegramClient, events
 from telethon.tl.types import MessageMediaPhoto, MessageMediaDocument
 
@@ -54,7 +55,7 @@ MEDIA_ONLY_CHANNELS = {
 ALLOWED_EXTENSIONS = {".jpeg", ".jpg", ".png", ".zip", ".rar"}
 
 # ============================================================
-# 1️⃣ FORWARDING HANDLER (UNCHANGED)
+# 1️⃣ FORWARDING HANDLER
 # ============================================================
 @client.on(events.NewMessage)
 async def forward_handler(event):
@@ -68,7 +69,6 @@ async def forward_handler(event):
     media = msg.media
 
     if chat_id in MEDIA_ONLY_CHANNELS:
-
         if not media:
             return
 
@@ -92,7 +92,7 @@ async def forward_handler(event):
     print(f"✅ Forwarded from {chat_id}")
 
 # ============================================================
-# 2️⃣ TOPIC-WISE DELETE RULES (TARGET GROUP MODERATION)
+# 2️⃣ TOPIC RULES
 # ============================================================
 TOPIC_RULES = {
     10: {        # 🏆 Bragging Rights
@@ -109,12 +109,46 @@ TOPIC_RULES = {
     }
 }
 
+# ============================================================
+# 3️⃣ MODERATION REPLY HELPER
+# ============================================================
+async def send_reason(topic_id, reason, offender, ttl=30):
+    mention = "Unknown user"
+
+    try:
+        user = await offender.get_sender()
+        if user:
+            mention = f"[{user.first_name}](tg://user?id={user.id})"
+    except:
+        pass
+
+    reply = await client.send_message(
+        TARGET_GROUP,
+        (
+            "⚠️ **Message removed**\n"
+            f"👤 User: {mention}\n"
+            f"📌 Reason: {reason}"
+        ),
+        reply_to=topic_id,
+        parse_mode="md"
+    )
+
+    await asyncio.sleep(ttl)
+    await reply.delete()
+
+# ============================================================
+# 4️⃣ DELETE HANDLER (TARGET GROUP)
+# ============================================================
 @client.on(events.NewMessage(chats=TARGET_GROUP))
 async def delete_handler(event):
     msg = event.message
 
-    # Ignore service / non-topic messages
     if not msg or not msg.reply_to:
+        return
+
+    # Ignore bot's own moderation messages
+    me = await client.get_me()
+    if msg.from_id and msg.from_id.user_id == me.id:
         return
 
     topic_id = msg.reply_to.reply_to_msg_id
@@ -127,7 +161,16 @@ async def delete_handler(event):
     if msg.text and not msg.media:
         if not rules["text"]:
             await msg.delete()
-            print(f"🗑 TEXT deleted | topic={topic_id}")
+            await send_reason(
+                topic_id,
+                (
+                    "Text messages are not allowed in this topic.\n\n"
+                    "👉 Kindly switch to "
+                    "[#XFaction-Chat](https://t.me/IngressIN/1) "
+                    "for chat & discussion."
+                ),
+                msg
+            )
         return
 
     media = msg.media
@@ -136,29 +179,34 @@ async def delete_handler(event):
     if isinstance(media, MessageMediaPhoto):
         if not rules["photo"]:
             await msg.delete()
-            print(f"🗑 PHOTO deleted | topic={topic_id}")
+            await send_reason(topic_id, "Photos are not allowed in this topic.", msg)
         return
 
-    # 🎥 VIDEO (handled BEFORE document)
+    # 🎥 VIDEO
     if msg.video:
         if not rules["video"]:
             await msg.delete()
-            print(f"🗑 VIDEO deleted | topic={topic_id}")
-        return  # 🔒 critical: stop here
+            await send_reason(topic_id, "Videos are not allowed in this topic.", msg)
+        return
 
-    # 📦 DOCUMENT (real files only, not video)
+    # 📦 DOCUMENT
     if isinstance(media, MessageMediaDocument) and not msg.video:
-        filename = msg.file.name or ""
+        filename = msg.file.name or "unknown file"
         ext = "." + filename.lower().split(".")[-1] if "." in filename else ""
 
         if ext not in rules["doc_ext"]:
+            allowed = ", ".join(sorted(rules["doc_ext"]))
             await msg.delete()
-            print(f"🗑 DOC {filename} deleted | topic={topic_id}")
+            await send_reason(
+                topic_id,
+                f"File type `{ext}` is not allowed here.\nAllowed: {allowed}",
+                msg
+            )
         return
 
 # =========================
 # START CLIENT
 # =========================
 client.start()
-print("🚀 Forwarding + topic moderation active (user session)")
+print("🚀 Forwarding + topic moderation active (final)")
 client.run_until_disconnected()
