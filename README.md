@@ -8,17 +8,11 @@ cd telegram-bot
 cp .env.example .env
 nano .env
 pip3 install -r requirements.txt
+python3 bot.py
 ```
 Install systemd
 ```
-sudo cp systemd/*.service systemd/*.timer /etc/systemd/system/
-sudo systemctl daemon-reload
 
-sudo systemctl enable telegram-bot.service
-sudo systemctl start telegram-bot.service
-
-sudo systemctl enable telegram-bot-update.timer
-sudo systemctl start telegram-bot-update.timer
 ```
 Logs
 ```
@@ -38,14 +32,7 @@ cd telegram-bot
 pip3 install -r requirements.txt
 cp .env.example .env
 nano .env
-
-sudo cp systemd/*.service systemd/*.timer /etc/systemd/system/
-sudo systemctl daemon-reload
-
-sudo systemctl enable telegram-bot
-sudo systemctl start telegram-bot
-sudo systemctl enable telegram-bot-update.timer
-sudo systemctl start telegram-bot-update.timer
+python3 bot.py
 ```
 From now on:
 Push to GitHub → Oracle auto-updates
