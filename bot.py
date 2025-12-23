@@ -31,37 +31,37 @@ TARGET_GROUP = int(os.getenv("TARGET_GROUP", "-1002303286535"))
 # SOURCE → TARGET TOPIC MAP
 # =========================
 CHANNEL_TOPIC_MAP = {
-    -1001268572490: 1,
-    -1003341948290: 1,
-
-    -1001305415858: 15,
-
-    -1001008795454: 11079,
-    -1001170454563: 11079,
-    -1001126789733: 11079,
-
-    -1001075281753: 8201,
-    -1001078001228: 8201,
-    -1001420065662: 8201,
-
-    -1002105354149: 1,
-    -1001167466234: 1,
-    -1001077599821: 1,
-    -1001064978090: 1,
-    -1001402896020: 1,
-    -1001851154018: 1,
-    -1001003824281: 1,
-    -1001837191055: 1,
+    -1001268572490: 1, # Dinesh Valor Channel -> Ingress India / XFaction Chat
+    -1003341948290: 1, # Ingress India Test -> Ingress India / XFaction Chat
+    
+    -1001305415858: 15, # IngressFS Notifications -> Ingress India / First Saturday
+    
+    -1001008795454: 11079, # Passcodes Ingress PRIME -> Ingress India / Ingress Updates
+    -1001170454563: 11079, # Ingress -> Ingress India / Ingress Updates
+    -1001126789733: 11079, # Ingress Passcodes -> -> Ingress India / Ingress Updates
+    
+    -1001075281753: 8201, # Mission Banners, Oh My! (Global XFAC [ENG]) -> Ingress India / Mission Banners
+    -1001078001228: 8201, # [Global] #MissionProject -> Ingress India / Mission Banners
+    -1001420065662: 8201, # Ingress Mission Addicts -> -> Ingress India / Mission Banners
+    
+    -1002105354149: 1, # Ingress World Wide Competition 2025 -> Ingress India / XFaction Chat
+    -1001167466234: 1, # NotNiantic Updates -> Ingress India / XFaction Chat
+    -1001077599821: 1, # Ingress Updates [ENG] -> Ingress India / XFaction Chat
+    -1001064978090: 1, # RGNN Ticker -> Ingress India / XFaction Chat
+    -1001402896020: 1, # News_Hackventscalendar -> Ingress India / XFaction Chat
+    -1001851154018: 1, # Ingress.Plus -> Ingress India / XFaction Chat
+    -1001003824281: 1, # Enlightened Today -> Ingress India / XFaction Chat
+    -1001837191055: 1, # Ingress Auctions -> Ingress India / XFaction Chat
 }
 
 # =========================
 # MEDIA-ONLY SOURCE CHANNELS
 # =========================
 MEDIA_ONLY_CHANNELS = {
-    -1003341948290,
-    -1001075281753,
-    -1001078001228,
-    -1001420065662,
+    -1003341948290, # Ingress India Test -> Ingress India / XFaction Chat
+    -1001075281753, # Mission Banners, Oh My! (Global XFAC [ENG]) -> Ingress India / Mission Banners
+    -1001078001228, # [Global] #MissionProject -> Ingress India / Mission Banners
+    -1001420065662, # Ingress Mission Addicts -> -> Ingress India / Mission Banners
 }
 
 ALLOWED_EXTENSIONS = {".jpeg", ".jpg", ".png", ".zip", ".rar"}
