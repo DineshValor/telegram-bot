@@ -46,9 +46,9 @@ CHANNEL_TOPIC_MAP = {
 # =========================
 MEDIA_ONLY_CHANNELS = {
     -1003341948290, # Ingress India Test -> Ingress India / XFaction Chat
-  -1001075281753, # Mission Banners, Oh My! (Global XFAC [ENG]) -> Ingress India / Mission Banners
-  -1001078001228, # [Global] #MissionProject -> Ingress India / Mission Banners
-  -1001420065662, # Ingress Mission Addicts -> -> Ingress India / Mission Banners
+    -1001075281753, # Mission Banners, Oh My! (Global XFAC [ENG]) -> Ingress India / Mission Banners
+    -1001078001228, # [Global] #MissionProject -> Ingress India / Mission Banners
+    -1001420065662, # Ingress Mission Addicts -> -> Ingress India / Mission Banners
 }
 
 ALLOWED_EXTENSIONS = {".jpeg", ".jpg", ".png", ".zip", ".rar"}
@@ -103,7 +103,7 @@ TOPIC_RULES = {
     },
     8201: {      # 🎭 Mission Banners
         "text": False,
-        "photo": False,
+        "photo": True,
         "video": False,
         "doc_ext": {".jpg", ".jpeg", ".png", ".zip", ".rar"}
     }
