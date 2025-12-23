@@ -12,7 +12,7 @@ python3 bot.py
 ```
 Install systemd
 ```
-
+sudo cp systemd/*.service systemd/*.timer /etc/systemd/system/
 ```
 Logs
 ```
