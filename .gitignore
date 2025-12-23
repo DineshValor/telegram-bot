@@ -1,4 +1,2 @@
 .env
 *.session
-__pycache__/
-logs/
