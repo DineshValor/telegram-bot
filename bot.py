@@ -10,7 +10,7 @@ from telethon.tl.types import MessageMediaPhoto, MessageMediaDocument
 # =========================
 load_dotenv()
 
-API_ID = int(os.getenv("API_ID", "0"))
+API_ID = int(os.getenv("API_ID"))
 API_HASH = os.getenv("API_HASH")
 
 if not API_ID or not API_HASH:
