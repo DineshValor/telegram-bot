@@ -1,55 +1,67 @@
+import os
 import asyncio
+from dotenv import load_dotenv
+
 from telethon import TelegramClient, events
 from telethon.tl.types import MessageMediaPhoto, MessageMediaDocument
 
 # =========================
-# AUTH
+# LOAD ENV
 # =========================
-api_id = 22996249
-api_hash = "e982daed463e4c9826c6c9ba828c2c37"
+load_dotenv()
 
-client = TelegramClient("user_session", api_id, api_hash)
+API_ID = int(os.getenv("API_ID", "0"))
+API_HASH = os.getenv("API_HASH")
+
+if not API_ID or not API_HASH:
+    raise RuntimeError("❌ API_ID or API_HASH missing in .env")
+
+# =========================
+# TELETHON CLIENT
+# =========================
+SESSION_NAME = "user_session"
+client = TelegramClient(SESSION_NAME, API_ID, API_HASH)
 
 # =========================
 # TARGET GROUP (FORUM)
 # =========================
-TARGET_GROUP = -1002303286535  # Ingress India 🇮🇳
+TARGET_GROUP = int(os.getenv("TARGET_GROUP", "-1002303286535"))
 
 # =========================
 # SOURCE → TARGET TOPIC MAP
 # =========================
 CHANNEL_TOPIC_MAP = {
-    -1001268572490: 1, # Dinesh Valor Channel -> Ingress India / XFaction Chat
-    -1003341948290: 1, # Ingress India Test -> Ingress India / XFaction Chat
-    
-    -1001305415858: 15, # IngressFS Notifications -> Ingress India / First Saturday
-    
-    -1001008795454: 11079, # Passcodes Ingress PRIME -> Ingress India / Ingress Updates
-    -1001170454563: 11079, # Ingress -> Ingress India / Ingress Updates
-    -1001126789733: 11079, # Ingress Passcodes -> -> Ingress India / Ingress Updates
-    
-    -1001075281753: 8201, # Mission Banners, Oh My! (Global XFAC [ENG]) -> Ingress India / Mission Banners
-    -1001078001228: 8201, # [Global] #MissionProject -> Ingress India / Mission Banners
-    -1001420065662: 8201, # Ingress Mission Addicts -> -> Ingress India / Mission Banners
-    
-    -1002105354149: 1, # Ingress World Wide Competition 2025 -> Ingress India / XFaction Chat
-    -1001167466234: 1, # NotNiantic Updates -> Ingress India / XFaction Chat
-    -1001077599821: 1, # Ingress Updates [ENG] -> Ingress India / XFaction Chat
-    -1001064978090: 1, # RGNN Ticker -> Ingress India / XFaction Chat
-    -1001402896020: 1, # News_Hackventscalendar -> Ingress India / XFaction Chat
-    -1001851154018: 1, # Ingress.Plus -> Ingress India / XFaction Chat
-    -1001003824281: 1, # Enlightened Today -> Ingress India / XFaction Chat
-    -1001837191055: 1, # Ingress Auctions -> Ingress India / XFaction Chat
+    -1001268572490: 1,
+    -1003341948290: 1,
+
+    -1001305415858: 15,
+
+    -1001008795454: 11079,
+    -1001170454563: 11079,
+    -1001126789733: 11079,
+
+    -1001075281753: 8201,
+    -1001078001228: 8201,
+    -1001420065662: 8201,
+
+    -1002105354149: 1,
+    -1001167466234: 1,
+    -1001077599821: 1,
+    -1001064978090: 1,
+    -1001402896020: 1,
+    -1001851154018: 1,
+    -1001003824281: 1,
+    -1001837191055: 1,
 }
 
 # =========================
 # MEDIA-ONLY SOURCE CHANNELS
 # =========================
 MEDIA_ONLY_CHANNELS = {
-    -1003341948290, # Ingress India Test -> Ingress India / XFaction Chat
-    -1001075281753, # Mission Banners, Oh My! (Global XFAC [ENG]) -> Ingress India / Mission Banners
-    -1001078001228, # [Global] #MissionProject -> Ingress India / Mission Banners
-    -1001420065662, # Ingress Mission Addicts -> -> Ingress India / Mission Banners
+    -1003341948290,
+    -1001075281753,
+    -1001078001228,
+    -1001420065662,
 }
 
 ALLOWED_EXTENSIONS = {".jpeg", ".jpg", ".png", ".zip", ".rar"}
@@ -99,14 +111,14 @@ TOPIC_RULES = {
         "text": False,
         "photo": True,
         "video": True,
-        "doc_ext": {".jpg", ".jpeg", ".png", ".mp4"}
+        "doc_ext": {".jpg", ".jpeg", ".png", ".mp4"},
     },
     8201: {      # 🎭 Mission Banners
         "text": False,
         "photo": True,
         "video": False,
-        "doc_ext": {".jpg", ".jpeg", ".png", ".zip", ".rar"}
-    }
+        "doc_ext": {".jpg", ".jpeg", ".png", ".zip", ".rar"},
+    },
 }
 
 # ============================================================
@@ -119,7 +131,7 @@ async def send_reason(topic_id, reason, offender, ttl=30):
         user = await offender.get_sender()
         if user:
             mention = f"[{user.first_name}](tg://user?id={user.id})"
-    except:
+    except Exception:
         pass
 
     reply = await client.send_message(
@@ -208,5 +220,5 @@ async def delete_handler(event):
 # START CLIENT
 # =========================
 client.start()
-print("🚀 Forwarding + topic moderation active (final)")
+print("🚀 Forwarding + topic moderation active")
 client.run_until_disconnected()
