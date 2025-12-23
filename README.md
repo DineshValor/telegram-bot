@@ -1,6 +1,6 @@
 ## Telegram Telethon Bot (systemd)
 
-### Setup (Oracle / Ubuntu)
+### Setup (Oracle / Ubuntu / Termux / CMD)
 
 ```bash
 git clone https://github.com/DineshValor/telegram-bot.git
