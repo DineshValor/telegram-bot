@@ -9,11 +9,23 @@ cp .env.example .env
 nano .env
 pip3 install -r requirements.txt
 ```
+Install systemd
+```
+sudo cp systemd/*.service systemd/*.timer /etc/systemd/system/
+sudo systemctl daemon-reload
+
+sudo systemctl enable telegram-bot.service
+sudo systemctl start telegram-bot.service
+
+sudo systemctl enable telegram-bot-update.timer
+sudo systemctl start telegram-bot-update.timer
+```
+
 ---
 
 # 🟡 ORACLE VM — ONE-TIME STEPS ONLY
 
-After GitHub work is done 👇
+After GitHub forked work is done 👇
 
 ```bash
 sudo apt update && sudo apt install -y python3 python3-pip git
