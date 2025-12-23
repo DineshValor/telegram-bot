@@ -8,7 +8,7 @@ cd telegram-bot
 cp .env.example .env
 nano .env
 pip3 install -r requirements.txt
-
+```
 ---
 
 # 🟡 ORACLE VM — ONE-TIME STEPS ONLY
@@ -31,3 +31,4 @@ sudo systemctl enable telegram-bot
 sudo systemctl start telegram-bot
 sudo systemctl enable telegram-bot-update.timer
 sudo systemctl start telegram-bot-update.timer
+```
