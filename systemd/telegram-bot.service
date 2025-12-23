@@ -1,0 +1,28 @@
+[Unit]
+Description=Telegram Telethon User Bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/telegram-bot
+EnvironmentFile=/home/ubuntu/telegram-bot/.env
+
+ExecStart=/usr/bin/python3 bot.py
+
+Restart=always
+RestartSec=5
+
+ExecStartPost=/usr/bin/python3 notifier.py "🚀 Bot started"
+ExecStopPost=/usr/bin/python3 notifier.py "❌ Bot stopped"
+ExecStopPost=/usr/bin/python3 notifier.py "🔁 Bot restarting"
+
+StandardOutput=journal
+StandardError=journal
+
+MemoryMax=600M
+CPUQuota=60%
+
+[Install]
+WantedBy=multi-user.target
