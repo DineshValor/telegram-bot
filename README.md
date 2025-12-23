@@ -20,7 +20,10 @@ sudo systemctl start telegram-bot.service
 sudo systemctl enable telegram-bot-update.timer
 sudo systemctl start telegram-bot-update.timer
 ```
-
+Logs
+```
+journalctl -u telegram-bot -f
+```
 ---
 
 # 🟡 ORACLE VM — ONE-TIME STEPS ONLY
@@ -44,3 +47,6 @@ sudo systemctl start telegram-bot
 sudo systemctl enable telegram-bot-update.timer
 sudo systemctl start telegram-bot-update.timer
 ```
+From now on:
+Push to GitHub → Oracle auto-updates
+No SSH needed unless debugging
