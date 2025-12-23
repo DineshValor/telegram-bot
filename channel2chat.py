@@ -99,7 +99,7 @@ TOPIC_RULES = {
         "text": False,
         "photo": True,
         "video": True,
-        "doc_ext": {".jpg", ".jpeg", ".png", "mp4"}
+        "doc_ext": {".jpg", ".jpeg", ".png", ".mp4"}
     },
     8201: {      # 🎭 Mission Banners
         "text": False,
