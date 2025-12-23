@@ -1,0 +1,8 @@
+[Unit]
+Description=Telegram Bot GitHub Updater
+
+[Service]
+Type=oneshot
+User=ubuntu
+WorkingDirectory=/home/ubuntu/telegram-bot
+ExecStart=/home/ubuntu/telegram-bot/updater.sh
