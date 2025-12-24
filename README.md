@@ -24,7 +24,7 @@ python3 bot.py
 
 #### Run 24×7 (optional)
 
-1️⃣ Copy systemd files
+1️⃣ Stop bot & copy systemd files
 ```
 cd /opt/telegram-bot
 sudo cp systemd/*.service systemd/*.timer /etc/systemd/system/
