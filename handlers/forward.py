@@ -8,8 +8,8 @@ from config.forwarding import (
     MEDIA_ONLY_CHANNELS,
     ALLOWED_EXTENSIONS,
 )
-
 from utils.logger import setup_logger
+
 logger = setup_logger()
 
 @client.on(events.NewMessage)
