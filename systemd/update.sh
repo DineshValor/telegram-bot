@@ -1,24 +1,26 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -e
 
 REPO_DIR="/opt/telegram-bot"
-SERVICE="telegram-bot"
+SERVICE_NAME="telegram-bot"
 BRANCH="master"
 
 cd "$REPO_DIR"
 
-echo "[$(date -u)] Checking for updates..."
+echo "[$(date)] Checking for updates..."
 
+# Fetch latest changes
 git fetch origin
 
 LOCAL=$(git rev-parse HEAD)
 REMOTE=$(git rev-parse origin/$BRANCH)
 
 if [ "$LOCAL" != "$REMOTE" ]; then
-    echo "Updates found. Pulling..."
+    echo "[$(date)] Updates found. Pulling..."
     git pull origin $BRANCH
-    echo "Restarting bot service..."
-    systemctl restart $SERVICE
+
+    echo "[$(date)] Restarting service..."
+    systemctl restart $SERVICE_NAME
 else
-    echo "No updates."
+    echo "[$(date)] No updates."
 fi
