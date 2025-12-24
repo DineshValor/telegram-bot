@@ -38,7 +38,7 @@ sudo systemctl start telegram-bot
 sudo systemctl enable telegram-bot-update.timer
 sudo systemctl start telegram-bot-update.timer
 ```
-3️⃣ Manually update
+3️⃣ Manually update (optional)
 ```
 sudo systemctl start telegram-bot-update.service
 ```
