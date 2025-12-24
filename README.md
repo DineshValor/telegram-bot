@@ -44,10 +44,6 @@ sudo systemctl start telegram-bot
 sudo systemctl enable telegram-bot-update.timer
 sudo systemctl start telegram-bot-update.timer
 ```
-4️⃣ Manually update (optional)
-```
-sudo systemctl start telegram-bot-update.service
-```
 
 ### FAQ
 #### Q. Fix ownership (IMPORTANT)
@@ -73,4 +69,7 @@ systemctl list-timers | grep telegram-bot
 ```
 This only confirms scheduling, not logic.
 
-#### Q. 
+#### Q. Manually update (optional)
+```
+sudo systemctl start telegram-bot-update.service
+```
