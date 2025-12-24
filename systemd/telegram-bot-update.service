@@ -3,4 +3,4 @@ Description=Update Telegram Bot from GitHub
 
 [Service]
 Type=oneshot
-ExecStart=/opt/telegram-bot/update.sh
+ExecStart=/opt/telegram-bot/systemd/update.sh
