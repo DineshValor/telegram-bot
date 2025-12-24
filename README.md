@@ -46,9 +46,13 @@ sudo systemctl start telegram-bot-update.service
 ### FAQ
 #### Q. Fix ownership (IMPORTANT)
 By default, cloning with sudo makes files owned by root.
+
 If you plan to:
+
 run bot as root → OK
+
 run bot as a normal user (recommended later) → fix ownership
+
 Example (recommended):
 ```
 sudo chown -R ubuntu:ubuntu /opt/telegram-bot
