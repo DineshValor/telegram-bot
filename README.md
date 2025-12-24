@@ -8,7 +8,7 @@
 1️⃣ Clone repo & fix ownership
 ```
 cd /opt
-sudo git clone https://github.com/DineshValor/telegram-bot.git
+sudo git clone https://github.com/DineshValor/telegram-bot
 sudo chown -R ubuntu:ubuntu /opt/telegram-bot
 ```
 2️⃣ Environment, dependencies & configure variables
