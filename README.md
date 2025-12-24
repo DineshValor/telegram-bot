@@ -5,9 +5,8 @@
 ```
 
 ### Setup on Cloud Server - (Oracle/AWS using Console)
-1️⃣ Clone repo & fix ownership
+1️⃣ Clone repo
 ```
-sudo chown -R ubuntu:ubuntu /opt
 cd /opt
 git clone https://github.com/DineshValor/telegram-bot
 ```
@@ -82,4 +81,9 @@ journalctl -u telegram-bot -f
 #### Q. Fix Manual Update Error
 ```
 sudo git config --system --add safe.directory /opt/telegram-bot
+```
+
+#### Q. Fix root shell permission
+```
+sudo chown -R ubuntu:ubuntu /opt
 ```
