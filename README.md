@@ -24,13 +24,18 @@ python3 bot.py
 
 #### Run 24×7 (optional)
 
-1️⃣ Stop bot & copy systemd files
+1️⃣ Stop bot
+```
+CTRL+C (keypress)
+```
+
+2️⃣ Copy systemd files
 ```
 cd /opt/telegram-bot
 sudo cp systemd/*.service systemd/*.timer /etc/systemd/system/
 ```
 
-2️⃣ Enable & start services
+3️⃣ Enable & start services
 ```
 sudo systemctl daemon-reload
 sudo systemctl enable telegram-bot
@@ -39,7 +44,7 @@ sudo systemctl start telegram-bot
 sudo systemctl enable telegram-bot-update.timer
 sudo systemctl start telegram-bot-update.timer
 ```
-3️⃣ Manually update (optional)
+4️⃣ Manually update (optional)
 ```
 sudo systemctl start telegram-bot-update.service
 ```
