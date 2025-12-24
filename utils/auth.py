@@ -1,15 +1,29 @@
-from db.database import get_db
+import json
+from pathlib import Path
 
-def is_authorized(telegram_id: int) -> bool:
-    conn = get_db()
-    cur = conn.cursor()
+AUTH_FILE = Path("authorized_users.json")
 
-    cur.execute(
-        "SELECT is_active FROM users WHERE telegram_id = ?",
-        (telegram_id,)
-    )
+def _load():
+    if not AUTH_FILE.exists():
+        return {"admins": [], "users": []}
 
-    row = cur.fetchone()
-    conn.close()
+    with open(AUTH_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
 
-    return bool(row and row[0])
+def _save(data):
+    with open(AUTH_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+
+def is_admin(user_id: int) -> bool:
+    data = _load()
+    return user_id in data.get("admins", [])
+
+def is_authorized(user_id: int) -> bool:
+    data = _load()
+    return user_id in data.get("users", []) or is_admin(user_id)
+
+def add_user(user_id: int):
+    data = _load()
+    if user_id not in data["users"]:
+        data["users"].append(user_id)
+        _save(data)
