@@ -23,6 +23,7 @@ async def delete_handler(event):
     if not rules:
         return
 
+    # Text
     if msg.text and not msg.media:
         if not rules["text"]:
             await msg.delete()
@@ -39,18 +40,21 @@ async def delete_handler(event):
 
     media = msg.media
 
+    # Photo
     if isinstance(media, MessageMediaPhoto):
         if not rules["photo"]:
             await msg.delete()
             await send_reason(topic_id, "Photos are not allowed here.", msg)
         return
 
+    # Video
     if msg.video:
         if not rules["video"]:
             await msg.delete()
             await send_reason(topic_id, "Videos are not allowed here.", msg)
         return
 
+    # Document
     if isinstance(media, MessageMediaDocument) and not msg.video:
         filename = msg.file.name or "unknown"
         ext = "." + filename.lower().split(".")[-1] if "." in filename else ""
