@@ -1,36 +1,33 @@
 from telethon import events
 from core.client import client
-from db.database import get_db
+from utils.auth import is_admin, is_authorized, add_user
 
 @client.on(events.NewMessage(pattern="/login"))
 async def login_handler(event):
-    sender = await event.get_sender()
-    telegram_id = sender.id
-    username = sender.username
+    user_id = event.sender_id
 
-    conn = get_db()
-    cur = conn.cursor()
+    if is_authorized(user_id):
+        await event.reply("✅ You are already authorized.")
+        return
 
-    cur.execute(
-        "SELECT is_active FROM users WHERE telegram_id = ?",
-        (telegram_id,)
+    await event.reply(
+        "📝 Login request received.\n"
+        "Please wait for admin approval."
     )
-    row = cur.fetchone()
 
-    if row:
-        if row[0]:
-            await event.reply("✅ You are already logged in.")
-        else:
-            await event.reply("⏳ Your access is pending approval.")
-    else:
-        cur.execute(
-            "INSERT INTO users (telegram_id, username) VALUES (?, ?)",
-            (telegram_id, username)
-        )
-        conn.commit()
-        await event.reply(
-            "📝 Login request submitted.\n"
-            "Please wait for admin approval."
-        )
+@client.on(events.NewMessage(pattern="/approve"))
+async def approve_handler(event):
+    if not event.is_reply:
+        return
 
-    conn.close()
+    admin_id = event.sender_id
+    if not is_admin(admin_id):
+        await event.reply("❌ You are not an admin.")
+        return
+
+    reply_msg = await event.get_reply_message()
+    user = await reply_msg.get_sender()
+
+    add_user(user.id)
+
+    await event.reply("✅ User approved successfully.")
