@@ -8,6 +8,9 @@ from config.forwarding import (
     MEDIA_ONLY_CHANNELS,
     ALLOWED_EXTENSIONS,
 )
+from utils.logger import setup_logger
+
+logger = setup_logger()
 
 @client.on(events.NewMessage)
 async def forward_handler(event):
@@ -41,4 +44,4 @@ async def forward_handler(event):
         reply_to=topic_id
     )
 
-    print(f"✅ Forwarded from {chat_id}")
+    logger.info("Forwarded message from chat_id=%s to topic_id=%s", chat_id, topic_id)
