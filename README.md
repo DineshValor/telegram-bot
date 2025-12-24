@@ -7,8 +7,7 @@
 ### Setup on Cloud Server - (Oracle/AWS using Console)
 1️⃣ Clone repo
 ```
-cd /opt
-sudo git clone https://github.com/DineshValor/telegram-bot.git
+git clone https://github.com/DineshValor/telegram-bot.git
 ```
 2️⃣ Environment, dependencies & configure variables
 ```
