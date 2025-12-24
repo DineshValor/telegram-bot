@@ -7,13 +7,14 @@
 ### Setup on Cloud Server - (Oracle/AWS using Console)
 1️⃣ Clone repo
 ```
-git clone https://github.com/DineshValor/telegram-bot.git
+cd /opt
+sudo git clone https://github.com/DineshValor/telegram-bot.git
 ```
 2️⃣ Environment, dependencies & configure variables
 ```
 cd telegram-bot
 pip3 install -r requirements.txt
-nano .env
+sudo nano .env
 ```
 3️⃣ Start bot
 ```
