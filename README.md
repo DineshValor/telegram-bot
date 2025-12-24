@@ -46,7 +46,7 @@ sudo systemctl start telegram-bot-update.timer
 ```
 
 ### FAQ
-#### Q. Fix ownership (IMPORTANT)
+#### Q. Fix Ownership (IMPORTANT)
 By default, cloning with sudo makes files owned by root.
 
 If you plan to:
@@ -61,7 +61,7 @@ sudo chown -R ubuntu:ubuntu /opt/telegram-bot
 ```
 (Replace ubuntu with your actual user.)
 
-#### Q. Check Timer (Optional)
+#### Q. Check Timer
 Even without waiting:
 ```
 systemctl status telegram-bot-update.timer
@@ -69,7 +69,17 @@ systemctl list-timers | grep telegram-bot
 ```
 This only confirms scheduling, not logic.
 
-#### Q. Manually update (optional)
+#### Q. Manually Update
 ```
 sudo systemctl start telegram-bot-update.service
+```
+#### Q. Check Bot Service
+```
+sudo systemctl status telegram-bot
+journalctl -u telegram-bot -f
+```
+
+#### Q. Fix Manual Update Error
+```
+sudo git config --system --add safe.directory /opt/telegram-bot
 ```
