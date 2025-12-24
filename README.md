@@ -22,6 +22,7 @@ python3 bot.py
 ```
 4️⃣ Manually update
 ```
+sudo systemctl start telegram-bot-update.service
 ```
 
 #### Run 24×7 (optional)
