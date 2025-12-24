@@ -14,7 +14,7 @@ sudo git clone https://github.com/DineshValor/telegram-bot.git
 ```
 cd telegram-bot
 pip3 install -r requirements.txt
-sudo nano .env
+nano .env
 ```
 3️⃣ Start bot
 ```
