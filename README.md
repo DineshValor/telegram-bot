@@ -65,4 +65,12 @@ sudo chown -R ubuntu:ubuntu /opt/telegram-bot
 ```
 (Replace ubuntu with your actual user.)
 
-#### Q.
+#### Q. Check Timer (Optional)
+Even without waiting:
+```
+systemctl status telegram-bot-update.timer
+systemctl list-timers | grep telegram-bot
+```
+This only confirms scheduling, not logic.
+
+#### Q. 
