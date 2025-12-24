@@ -9,6 +9,7 @@ from config.forwarding import (
     ALLOWED_EXTENSIONS,
 )
 from utils.logger import setup_logger
+from utils.stats import inc_forwarded
 
 logger = setup_logger()
 
@@ -44,4 +45,12 @@ async def forward_handler(event):
         reply_to=topic_id
     )
 
-    logger.info("Forwarded message from chat_id=%s to topic_id=%s", chat_id, topic_id)
+    # ✅ Stats hook
+    inc_forwarded(topic_id)
+
+    # ✅ Logging
+    logger.info(
+        "Forwarded message from chat_id=%s to topic_id=%s",
+        chat_id,
+        topic_id
+    )
