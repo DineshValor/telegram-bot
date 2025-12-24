@@ -6,6 +6,7 @@ from config.env import TARGET_GROUP
 from config.moderation import TOPIC_RULES
 from utils.messages import send_reason
 from utils.logger import setup_logger
+from utils.stats import inc_deleted
 
 logger = setup_logger()
 
@@ -30,6 +31,7 @@ async def delete_handler(event):
     if msg.text and not msg.media:
         if not rules["text"]:
             await msg.delete()
+            inc_deleted(topic_id)
             logger.warning(
                 "Deleted TEXT in topic_id=%s from user_id=%s",
                 topic_id,
@@ -52,6 +54,7 @@ async def delete_handler(event):
     if isinstance(media, MessageMediaPhoto):
         if not rules["photo"]:
             await msg.delete()
+            inc_deleted(topic_id)
             logger.warning(
                 "Deleted PHOTO in topic_id=%s from user_id=%s",
                 topic_id,
@@ -64,6 +67,7 @@ async def delete_handler(event):
     if msg.video:
         if not rules["video"]:
             await msg.delete()
+            inc_deleted(topic_id)
             logger.warning(
                 "Deleted VIDEO in topic_id=%s from user_id=%s",
                 topic_id,
@@ -79,6 +83,7 @@ async def delete_handler(event):
 
         if ext not in rules["doc_ext"]:
             await msg.delete()
+            inc_deleted(topic_id)
             logger.warning(
                 "Deleted DOCUMENT (%s) in topic_id=%s from user_id=%s",
                 ext,
@@ -90,4 +95,4 @@ async def delete_handler(event):
                 topic_id,
                 f"File type `{ext}` not allowed.\nAllowed: {allowed}",
                 msg
-        )
+            )
