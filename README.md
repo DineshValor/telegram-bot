@@ -20,10 +20,6 @@ nano .env
 ```
 python3 bot.py
 ```
-4️⃣ Manually update
-```
-sudo systemctl start telegram-bot-update.service
-```
 
 #### Run 24×7 (optional)
 
@@ -41,6 +37,10 @@ sudo systemctl start telegram-bot
 
 sudo systemctl enable telegram-bot-update.timer
 sudo systemctl start telegram-bot-update.timer
+```
+3️⃣ Manually update
+```
+sudo systemctl start telegram-bot-update.service
 ```
 
 ### FAQ
