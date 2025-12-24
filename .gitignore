@@ -2,5 +2,3 @@
 *.session
 *.session-journal
 __pycache__/
-logs/
-*.log
