@@ -1,8 +1,6 @@
-from core.client import client
+from core.startup import start_bot
 
 import handlers.forward
 import handlers.moderation
 
-client.start()
-print("🚀 Forwarding + moderation active")
-client.run_until_disconnected()
+start_bot()
