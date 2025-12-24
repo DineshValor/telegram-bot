@@ -1,0 +1,6 @@
+[Unit]
+Description=Update Telegram Bot from GitHub
+
+[Service]
+Type=oneshot
+ExecStart=/opt/telegram-bot/update.sh
