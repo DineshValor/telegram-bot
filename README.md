@@ -5,10 +5,11 @@
 ```
 
 ### Setup on Cloud Server - (Oracle/AWS using Console)
-1️⃣ Clone repo
+1️⃣ Clone repo & fix ownership
 ```
 cd /opt
 sudo git clone https://github.com/DineshValor/telegram-bot.git
+sudo chown -R ubuntu:ubuntu /opt/telegram-bot
 ```
 2️⃣ Environment, dependencies & configure variables
 ```
