@@ -1,0 +1,65 @@
+from telethon import events
+from telethon.tl.types import MessageMediaPhoto, MessageMediaDocument
+
+from core.client import client
+from config.env import TARGET_GROUP
+from config.moderation import TOPIC_RULES
+from utils.messages import send_reason
+
+@client.on(events.NewMessage(chats=TARGET_GROUP))
+async def delete_handler(event):
+    msg = event.message
+
+    if not msg or not msg.reply_to:
+        return
+
+    me = await client.get_me()
+    if msg.from_id and msg.from_id.user_id == me.id:
+        return
+
+    topic_id = msg.reply_to.reply_to_msg_id
+    rules = TOPIC_RULES.get(topic_id)
+
+    if not rules:
+        return
+
+    if msg.text and not msg.media:
+        if not rules["text"]:
+            await msg.delete()
+            await send_reason(
+                topic_id,
+                (
+                    "Text messages are not allowed in this topic.\n\n"
+                    "👉 Kindly switch to "
+                    "[#XFaction-Chat](https://t.me/IngressIN/1)"
+                ),
+                msg
+            )
+        return
+
+    media = msg.media
+
+    if isinstance(media, MessageMediaPhoto):
+        if not rules["photo"]:
+            await msg.delete()
+            await send_reason(topic_id, "Photos are not allowed here.", msg)
+        return
+
+    if msg.video:
+        if not rules["video"]:
+            await msg.delete()
+            await send_reason(topic_id, "Videos are not allowed here.", msg)
+        return
+
+    if isinstance(media, MessageMediaDocument) and not msg.video:
+        filename = msg.file.name or "unknown"
+        ext = "." + filename.lower().split(".")[-1] if "." in filename else ""
+
+        if ext not in rules["doc_ext"]:
+            allowed = ", ".join(sorted(rules["doc_ext"]))
+            await msg.delete()
+            await send_reason(
+                topic_id,
+                f"File type `{ext}` not allowed.\nAllowed: {allowed}",
+                msg
+            )
