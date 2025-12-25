@@ -5,18 +5,24 @@
 ```
 
 ### Setup on Cloud Server - (Oracle/AWS using Console)
-1️⃣ Clone repo
+1️⃣ Update Server & Install Dependencies
+```
+sudo apt update && sudo apt upgrade -y
+sudo apt install git python3 python3-pip python3-venv -y
+```
+
+2️⃣ Clone repo
 ```
 cd /opt
 git clone https://github.com/DineshValor/telegram-bot
 ```
-2️⃣ Environment, dependencies & configure variables
+3️⃣ Environment, dependencies & configure variables
 ```
 cd telegram-bot
 pip3 install -r requirements.txt
 nano .env
 ```
-3️⃣ Start bot
+4️⃣ Start bot
 ```
 python3 bot.py
 ```
@@ -25,7 +31,7 @@ python3 bot.py
 
 1️⃣ Stop bot
 ```
-CTRL+C (keypress)
+STOP BOT RUNNING => CTRL+C (keypress)
 ```
 
 2️⃣ Copy systemd files
