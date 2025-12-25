@@ -355,3 +355,8 @@ sudo systemctl restart telegram-bot-update.timer
 sudo systemctl reset-failed telegram-bot
 sudo systemctl restart telegram-bot
 ```
+### Q. Overwritten Error Fix
+```
+git restore <file>
+git pull
+```
