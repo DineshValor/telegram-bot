@@ -24,7 +24,7 @@ echo "[$(date)] ⬇️ Updates detected, pulling..."
 git pull --ff-only origin "$BRANCH"
 
 if [[ ! -d "$VENV_DIR" ]]; then
-    echo "[$(date)] 🐍 Creating virtual environment..."
+    echo "[$(date)] 🐍 Creating virtualenv..."
     python3 -m venv "$VENV_DIR"
 fi
 
