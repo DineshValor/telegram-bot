@@ -421,4 +421,6 @@ sudo systemctl daemon-reload
 ```
 
 #### Q. If bot doesn’t start
+```
 journalctl -u telegram-bot --no-pager
+```
