@@ -8,28 +8,31 @@ BRANCH="master"
 
 cd "$REPO_DIR"
 
-echo "[$(date)] Checking for updates..."
+echo "[$(date)] 🔍 Checking for updates..."
 
-git fetch origin
+git fetch origin "$BRANCH"
 
-LOCAL=$(git rev-parse HEAD)
-REMOTE=$(git rev-parse origin/$BRANCH)
+LOCAL_HASH=$(git rev-parse HEAD)
+REMOTE_HASH=$(git rev-parse "origin/$BRANCH")
 
-if [[ "$LOCAL" != "$REMOTE" ]]; then
-    echo "[$(date)] Updates found. Pulling..."
-    git pull origin "$BRANCH"
-
-    if [[ ! -d "$VENV_DIR" ]]; then
-        echo "[$(date)] Creating virtualenv..."
-        python3 -m venv "$VENV_DIR"
-    fi
-
-    echo "[$(date)] Updating dependencies..."
-    "$VENV_DIR/bin/pip" install --upgrade pip
-    "$VENV_DIR/bin/pip" install -r requirements.txt
-
-    echo "[$(date)] Restarting bot service..."
-    systemctl restart "$SERVICE_NAME"
-else
-    echo "[$(date)] No updates."
+if [[ "$LOCAL_HASH" == "$REMOTE_HASH" ]]; then
+    echo "[$(date)] ✅ No updates found."
+    exit 0
 fi
+
+echo "[$(date)] ⬇️ Updates detected, pulling..."
+git pull --ff-only origin "$BRANCH"
+
+if [[ ! -d "$VENV_DIR" ]]; then
+    echo "[$(date)] 🐍 Creating virtual environment..."
+    python3 -m venv "$VENV_DIR"
+fi
+
+echo "[$(date)] 📦 Updating dependencies..."
+"$VENV_DIR/bin/pip" install --upgrade pip
+"$VENV_DIR/bin/pip" install -r requirements.txt
+
+echo "[$(date)] 🔄 Restarting bot service..."
+systemctl restart "$SERVICE_NAME"
+
+echo "[$(date)] ✅ Update complete."
