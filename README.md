@@ -244,60 +244,123 @@ You can confidently:
 ```
 
 ### Setup on Cloud Server - (Oracle/AWS using Console)
-1️⃣ Update Server & Install Dependencies
+
+1️⃣ SSH into Oracle server (or your preferred one)
 ```
-sudo apt update && sudo apt upgrade -y
-sudo apt install git python3 python3-pip python3-venv -y
+ssh <PRIVATE_KEY> ubuntu@<SERVER_IP>
 ```
+
 2️⃣ Clone Your GitHub Repository
+
+If repo is not cloned
 ```
-cd /opt
-sudo git clone https://github.com/DineshValor/telegram-bot.git
-sudo chown -R ubuntu:ubuntu telegram-bot
-cd telegram-bot
+cd /home/ubuntu
+git clone https://github.com/DineshValor/telegram-bot.git
 ```
-3️⃣ Python Virtual Environment (IMPORTANT)
+If already cloned
 ```
+cd /home/ubuntu/telegram-bot
+git pull origin master
+```
+
+3️⃣ Create Python virtual environment
+```
+cd /home/ubuntu/telegram-bot
 python3 -m venv venv
 source venv/bin/activate
+pip install -r requirements.txt
 deactivate
 ```
-4️⃣ Install dependencies & configure variables
+
+4️⃣ Configure variables
 ```
-pip install -r requirements.txt
-nano .env
+nano /home/ubuntu/telegram-bot/.env
 ```
+
+5️⃣ Make update script executable
+```
+chmod +x /home/ubuntu/telegram-bot/systemd/update.sh
+```
+Verify:
+```
+ls -l /home/ubuntu/telegram-bot/systemd/update.sh
+```
+You should see -rwx.
+
 5️⃣ Start bot
 ```
-cd /opt/telegram-bot
+cd /home/ubuntu/telegram-bot
 source venv/bin/activate
 python3 bot.py
 ```
 
-#### Run 24×7 (optional)
+#### Run 24×7 (Auto update + restart)
 
 1️⃣ Stop bot
 ```
 CTRL+C (Key Press)
 ```
 
-2️⃣ Copy systemd files
+2️⃣ Install systemd service files
+
+Systemd cannot read files from your repo directly. We must copy them.
 ```
-cd /opt/telegram-bot
-sudo cp systemd/*.service systemd/*.timer /etc/systemd/system/
+sudo cp /home/ubuntu/telegram-bot/systemd/telegram-bot.service /etc/systemd/system/
+sudo cp /home/ubuntu/telegram-bot/systemd/telegram-bot-update.service /etc/systemd/system/
+sudo cp /home/ubuntu/telegram-bot/systemd/telegram-bot-update.timer /etc/systemd/system/
 ```
 
-3️⃣ Enable & start services (one-time)
+3️⃣ Reload systemd
 ```
 sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
+```
 
+4️⃣ Enable & start the bot
+```
 sudo systemctl enable telegram-bot
 sudo systemctl start telegram-bot
+```
+Check status:
+```
+systemctl status telegram-bot
+```
+You should see:
+```
+Active: active (running)
+```
 
+5️⃣ Enable & start update timer
+```
 sudo systemctl enable telegram-bot-update.timer
 sudo systemctl start telegram-bot-update.timer
 ```
+Verify timer:
+```
+systemctl list-timers | grep telegram-bot
+```
+You should see next run time.
+
+6️⃣ Verify logs (VERY IMPORTANT)
+
+Bot logs:
+```
+journalctl -u telegram-bot -f
+```
+Update logs:
+```
+journalctl -u telegram-bot-update
+```
+
+7️⃣ Manual update test (optional but recommended)
+
+Run update service manually:
+```
+sudo systemctl start telegram-bot-update.service
+```
+Expected behavior:
+• If no new commit → “No updates found”
+• If new commit → pull → restart bot
 
 ### FAQ
 
@@ -325,3 +388,5 @@ chmod +x /home/ubuntu/telegram-bot/systemd/update.sh
 sudo systemctl daemon-reload
 ```
 
+#### Q. If bot doesn’t start
+journalctl -u telegram-bot --no-pager
