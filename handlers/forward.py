@@ -1,3 +1,5 @@
+import asyncio
+
 from telethon import events
 from telethon.errors import FloodWaitError
 from telethon.tl.types import MessageMediaPhoto, MessageMediaDocument
@@ -9,9 +11,8 @@ from config.forwarding import (
     MEDIA_ONLY_CHANNELS,
     ALLOWED_EXTENSIONS,
 )
+from config.forwarding_topics import FORWARD_TOPIC_RULES
 from utils.logger import setup_logger
-
-import asyncio
 
 logger = setup_logger()
 
@@ -20,11 +21,46 @@ FORWARDED_MAP = {}
 
 
 # =========================
-# Utility helpers
+# Topic rule validation
 # =========================
 
-def is_allowed_media(msg):
-    """Validate media based on configured rules."""
+def allowed_by_topic_rules(msg, topic_id):
+    rules = FORWARD_TOPIC_RULES.get(topic_id)
+
+    # No rules → allow everything
+    if not rules:
+        return True
+
+    # 📝 Text
+    if msg.text and not msg.media:
+        return rules.get("text", False)
+
+    media = msg.media
+
+    # 🖼 Photo
+    if isinstance(media, MessageMediaPhoto):
+        return rules.get("photo", False)
+
+    # 🎥 Video
+    if msg.video:
+        return rules.get("video", False)
+
+    # 📦 Document
+    if isinstance(media, MessageMediaDocument):
+        allowed_ext = rules.get("doc_ext")
+
+        if allowed_ext is None:
+            return True
+
+        filename = msg.file.name or ""
+        ext = "." + filename.lower().split(".")[-1] if "." in filename else ""
+        return ext in allowed_ext
+
+    return False
+
+
+def allowed_media_channel(msg):
+    """Validate media-only channel rules."""
     media = msg.media
 
     if isinstance(media, MessageMediaPhoto):
@@ -39,7 +75,6 @@ def is_allowed_media(msg):
 
 
 async def safe_forward(msg, topic_id):
-    """Forward message safely and track mapping."""
     try:
         fwd = await client.send_message(
             TARGET_GROUP,
@@ -50,7 +85,7 @@ async def safe_forward(msg, topic_id):
         return fwd
 
     except FloodWaitError as e:
-        logger.warning("Flood wait %ss — sleeping", e.seconds)
+        logger.warning("FloodWait %ss — sleeping", e.seconds)
         await asyncio.sleep(e.seconds)
         return await safe_forward(msg, topic_id)
 
@@ -69,22 +104,24 @@ async def forward_handler(event):
     chat_id = event.chat_id
     topic_id = CHANNEL_TOPIC_MAP.get(chat_id)
 
-    if not topic_id or not msg:
+    if not msg or not topic_id:
         return
 
-    # Media-only channel logic
+    # Media-only channel enforcement
     if chat_id in MEDIA_ONLY_CHANNELS:
-        if not msg.media or not is_allowed_media(msg):
+        if not msg.media or not allowed_media_channel(msg):
             return
 
-    await safe_forward(msg, topic_id)
+    # Topic-based rules
+    if not allowed_by_topic_rules(msg, topic_id):
+        logger.info(
+            "Skipped msg_id=%s (topic rules) → topic=%s",
+            msg.id,
+            topic_id
+        )
+        return
 
-    logger.info(
-        "Forwarded msg_id=%s from chat_id=%s → topic_id=%s",
-        msg.id,
-        chat_id,
-        topic_id
-    )
+    await safe_forward(msg, topic_id)
 
 
 # =========================
@@ -99,11 +136,14 @@ async def album_handler(event):
     if not topic_id:
         return
 
-    # Media-only channel → allow albums only if all media valid
-    if chat_id in MEDIA_ONLY_CHANNELS:
-        for msg in event.messages:
-            if not is_allowed_media(msg):
-                return
+    for msg in event.messages:
+        # Media-only channel rules
+        if chat_id in MEDIA_ONLY_CHANNELS and not allowed_media_channel(msg):
+            return
+
+        # Topic rules
+        if not allowed_by_topic_rules(msg, topic_id):
+            return
 
     try:
         fwd_msgs = await client.send_message(
@@ -116,9 +156,8 @@ async def album_handler(event):
             FORWARDED_MAP[src.id] = fwd.id
 
         logger.info(
-            "Forwarded album (%s msgs) from chat_id=%s → topic_id=%s",
+            "Forwarded album (%s msgs) → topic=%s",
             len(event.messages),
-            chat_id,
             topic_id
         )
 
@@ -136,7 +175,7 @@ async def edit_handler(event):
     chat_id = event.chat_id
     topic_id = CHANNEL_TOPIC_MAP.get(chat_id)
 
-    if not topic_id or not msg:
+    if not msg or not topic_id:
         return
 
     old_fwd_id = FORWARDED_MAP.pop(msg.id, None)
@@ -145,18 +184,15 @@ async def edit_handler(event):
         if old_fwd_id:
             await client.delete_messages(TARGET_GROUP, old_fwd_id)
 
-        # Re-apply media rules
+        # Re-check rules
         if chat_id in MEDIA_ONLY_CHANNELS:
-            if not msg.media or not is_allowed_media(msg):
+            if not msg.media or not allowed_media_channel(msg):
                 return
+
+        if not allowed_by_topic_rules(msg, topic_id):
+            return
 
         await safe_forward(msg, topic_id)
 
-        logger.info(
-            "Reposted edited msg_id=%s from chat_id=%s",
-            msg.id,
-            chat_id
-        )
-
     except Exception as e:
-        logger.exception("Edit handling failed: %s", e)
+        logger.exception("Edit repost failed: %s", e)
