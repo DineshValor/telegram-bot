@@ -296,75 +296,9 @@ sudo systemctl start telegram-bot-update.timer
 ```
 
 ## FAQ
-### Q. Fix Ownership (IMPORTANT)
-By default, cloning with sudo makes files owned by root.
-
-If you plan to:
-
-run bot as root → OK
-
-run bot as a normal user (recommended later) → fix ownership
-
-Example (recommended):
+### Q. Operational visibility
 ```
-sudo chown -R ubuntu:ubuntu /opt/telegram-bot
-```
-(Replace ubuntu with your actual user.)
-
-### Q. Check Timer
-Even without waiting:
-```
-systemctl status telegram-bot-update.timer
-systemctl list-timers | grep telegram-bot
-```
-This only confirms scheduling, not logic.
-
-### Q. Manually Update
-```
-sudo systemctl start telegram-bot-update.service
-```
-### Q. Check Bot Service
-```
-sudo systemctl status telegram-bot
 journalctl -u telegram-bot -f
-```
-
-### Q. Fix Manual Update Error
-```
-sudo git config --system --add safe.directory /opt/telegram-bot
-```
-
-### Q. Fix root shell permission
-```
-sudo chown -R ubuntu:ubuntu /opt
-```
-
-### Q. Update Systemd files
-```
-sudo systemctl daemon-reload
-
-sudo systemctl enable telegram-bot.service
-sudo systemctl restart telegram-bot.service
-
-sudo systemctl enable telegram-bot-update.timer
-sudo systemctl restart telegram-bot-update.timer
-```
-
-### Q. Recover Failed State Systemd
-```
-sudo systemctl reset-failed telegram-bot
-sudo systemctl restart telegram-bot
-```
-### Q. Overwritten Error Fix
-```
-git restore <file>
-git pull
-```
-### Q. Permissions & ownership (silent killer check)
-```
-ls -l /opt/telegram-bot/systemd/update.sh
-```
--rwxr-xr-x
-```
-git config --system --get-all safe.directory
+journalctl -u telegram-bot-update
+systemctl list-timers
 ```
