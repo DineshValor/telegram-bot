@@ -1,21 +1,11 @@
 [Unit]
-Description=Update Telegram Bot from GitHub
-After=network-online.target
-Wants=network-online.target
+Description=Periodic update check for Telegram Bot
 
-[Service]
-Type=oneshot
-User=ubuntu
-Group=ubuntu
-WorkingDirectory=/opt/telegram-bot
-
-ExecStart=/opt/telegram-bot/systemd/update.sh
-
-Environment=PYTHONUNBUFFERED=1
-TimeoutStartSec=300
-
-NoNewPrivileges=true
-PrivateTmp=true
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+AccuracySec=30s
+Persistent=true
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=timers.target
