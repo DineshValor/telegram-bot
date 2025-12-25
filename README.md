@@ -10,20 +10,26 @@
 sudo apt update && sudo apt upgrade -y
 sudo apt install git python3 python3-pip python3-venv -y
 ```
-
-2️⃣ Clone repo
+2️⃣ Clone Your GitHub Repository
 ```
 cd /opt
-git clone https://github.com/DineshValor/telegram-bot
-```
-3️⃣ Environment, dependencies & configure variables
-```
+sudo git clone https://github.com/DineshValor/telegram-bot.git
+sudo chown -R ubuntu:ubuntu telegram-bot
 cd telegram-bot
-pip3 install -r requirements.txt
+```
+3️⃣ Python Virtual Environment (IMPORTANT)
+```
+python3 -m venv venv
+source venv/bin/activate
+```
+3️⃣ Install dependencies & configure variables
+```
+pip install -r requirements.txt
 nano .env
 ```
 4️⃣ Start bot
 ```
+source venv/bin/activate
 python3 bot.py
 ```
 
@@ -31,7 +37,7 @@ python3 bot.py
 
 1️⃣ Stop bot
 ```
-STOP BOT RUNNING => CTRL+C (keypress)
+CTRL+C (Key Press)
 ```
 
 2️⃣ Copy systemd files
