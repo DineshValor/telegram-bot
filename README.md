@@ -314,3 +314,14 @@ journalctl -u telegram-bot -f
 journalctl -u telegram-bot-update
 systemctl list-timers
 ```
+
+#### Q. Make update.sh executable
+```
+chmod +x /home/ubuntu/telegram-bot/systemd/update.sh
+```
+
+#### Q. Reload systemd
+```
+sudo systemctl daemon-reload
+```
+
