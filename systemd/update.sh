@@ -35,4 +35,4 @@ echo "[$(date)] 📦 Updating dependencies..."
 echo "[$(date)] 🔄 Restarting bot service..."
 systemctl restart "$SERVICE_NAME"
 
-echo "[$(date)] ✅ Update complete."
+echo "[$(date)] ❌ Update complete."
