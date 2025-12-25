@@ -276,6 +276,11 @@ You can confidently:
 ```
 ssh <PRIVATE_KEY> ubuntu@<SERVER_IP>
 ```
+Update server & install dependencies:
+```
+sudo apt update && sudo apt upgrade -y
+sudo apt install git python3 python3-pip python3-venv -y
+```
 
 2️⃣ Clone Your GitHub Repository
 
