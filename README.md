@@ -100,7 +100,7 @@ sudo git config --system --add safe.directory /opt/telegram-bot
 sudo chown -R ubuntu:ubuntu /opt
 ```
 
-#### Q. Update Systemd files!
+#### Q. Update Systemd files
 ```
 sudo systemctl daemon-reload
 
@@ -109,4 +109,10 @@ sudo systemctl restart telegram-bot.service
 
 sudo systemctl enable telegram-bot-update.timer
 sudo systemctl restart telegram-bot-update.timer
+```
+
+#### Q. Recover Failed State Systemd
+```
+sudo systemctl reset-failed telegram-bot
+sudo systemctl restart telegram-bot
 ```
