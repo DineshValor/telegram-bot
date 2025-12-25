@@ -8,7 +8,7 @@ def setup_logger():
         return logger  # prevent duplicate handlers
 
     formatter = logging.Formatter(
-        "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+        "%(levelname)s | %(name)s | %(message)s"
     )
 
     console_handler = logging.StreamHandler()
