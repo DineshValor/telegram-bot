@@ -6,21 +6,13 @@ from config.env import TARGET_GROUP
 
 
 def escape_md(text: str) -> str:
-    """Escape Telegram markdown characters."""
+    """Escape Telegram markdown characters (for user-generated text only)."""
     if not text:
         return ""
     return re.sub(r'([_*`\[\]()])', r'\\\1', text)
 
 
 async def send_reason(topic_id, reason, offender, ttl=30):
-    """
-    Send a temporary moderation reason message and auto-delete it.
-
-    :param topic_id: Forum topic ID
-    :param reason: Reason text
-    :param offender: Original offending message
-    :param ttl: Seconds before auto-delete
-    """
     mention = "Unknown user"
 
     try:
@@ -37,7 +29,7 @@ async def send_reason(topic_id, reason, offender, ttl=30):
             (
                 "⚠️ **Message removed**\n"
                 f"👤 User: {mention}\n"
-                f"📌 Reason: {escape_md(reason)}"
+                f"📌 Reason: {reason}"
             ),
             reply_to=topic_id,
             parse_mode="md"
