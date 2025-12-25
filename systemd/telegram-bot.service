@@ -3,6 +3,9 @@ Description=Telegram Forwarding Bot
 After=network-online.target
 Wants=network-online.target
 
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
 [Service]
 Type=simple
 User=root
@@ -13,8 +16,6 @@ ExecStart=/opt/telegram-bot/venv/bin/python bot.py
 
 Restart=always
 RestartSec=5
-StartLimitIntervalSec=60
-StartLimitBurst=5
 
 KillSignal=SIGTERM
 TimeoutStopSec=30
