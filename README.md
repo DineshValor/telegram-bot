@@ -267,6 +267,7 @@ nano .env
 ```
 4️⃣ Start bot
 ```
+cd /opt/telegram-bot
 source venv/bin/activate
 python3 bot.py
 ```
