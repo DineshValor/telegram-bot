@@ -11,12 +11,38 @@
 telegram-bot/
 ├── bot.py
 ├── requirements.txt
-├── .env (ignored)
+├── README.md
+├── .gitignore
+├── .env                    # ❌ not committed (server only)
+│
 ├── config/
+│   ├── __init__.py
+│   ├── env.py
+│   ├── forwarding.py
+│   └── moderation.py
+│
 ├── core/
+│   ├── __init__.py
+│   ├── client.py
+│   └── startup.py
+│
 ├── handlers/
+│   ├── __init__.py
+│   ├── forward.py
+│   └── moderation.py
+│
 ├── utils/
+│   ├── __init__.py
+│   ├── logger.py
+│   └── messages.py
+│
 ├── systemd/
+│   ├── telegram-bot.service
+│   ├── telegram-bot-update.service
+│   ├── telegram-bot-update.timer
+│   └── update.sh
+│
+└── venv/                   # ❌ not committed (server only)
 ```
 
 #### 🔐 2. Security & Secrets
