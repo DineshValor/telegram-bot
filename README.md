@@ -1,5 +1,6 @@
 ## Telegram Bot (based on Telethon)
-### 🧱 1. Project Structure
+
+#### 🧱 1. Project Structure
 
 ✔ Clear separation of concerns
 
@@ -18,7 +19,7 @@ telegram-bot/
 ├── systemd/
 ```
 
-### 🔐 2. Security & Secrets
+#### 🔐 2. Security & Secrets
 
 ✔ .env ignored in Git
 
@@ -30,7 +31,7 @@ telegram-bot/
 
 ✔ Non-root systemd execution
 
-### ⚙️ 3. Environment & Config
+#### ⚙️ 3. Environment & Config
 
 config/env.py
 
@@ -52,7 +53,7 @@ config/moderation.py
 
 ✔ Clear permission model
 
-### 🤖 4. Telethon Client & Startup
+#### 🤖 4. Telethon Client & Startup
 
 core/client.py
 
@@ -69,7 +70,7 @@ core/startup.py
 
 ✔ Proper exit codes
 
-### 🔁 5. Forwarding Logic
+#### 🔁 5. Forwarding Logic
 
 handlers/forward.py
 
@@ -87,7 +88,7 @@ handlers/forward.py
 
 ✔ Forward tracking prevents duplicates
 
-### 🛡️ 6. Moderation Logic
+#### 🛡️ 6. Moderation Logic
 
 handlers/moderation.py
 
@@ -106,7 +107,7 @@ handlers/moderation.py
 
 ✔ Clean logging
 
-### 💬 7. Messaging UX
+#### 💬 7. Messaging UX
 
 utils/messages.py
 
@@ -120,7 +121,7 @@ utils/messages.py
 
 ✔ No UX regressions
 
-### 🧾 8. Logging
+#### 🧾 8. Logging
 
 utils/logger.py
 
@@ -132,7 +133,7 @@ utils/logger.py
 
 ✔ Readable format
 
-### 🔄 9. Self-Update System
+#### 🔄 9. Self-Update System
 
 systemd/update.sh
 
@@ -160,7 +161,7 @@ telegram-bot-update.service
 
 ✔ Network-aware
 
-### 🧠 10. systemd Bot Service
+#### 🧠 10. systemd Bot Service
 
 telegram-bot.service
 
@@ -174,7 +175,7 @@ telegram-bot.service
 
 ✔ Journal logging
 
-### 📦 11. Dependencies
+#### 📦 11. Dependencies
 
 requirements.txt
 
@@ -184,7 +185,7 @@ requirements.txt
 
 ✔ No unused libraries
 
-### 🚦 12. Load & Scale Fit
+#### 🚦 12. Load & Scale Fit
 
 Actual usage:
 
@@ -200,7 +201,7 @@ Bot can safely handle:
 
 ✔ Long-running sessions
 
-### 🧪 13. Failure Scenarios (All Covered)
+#### 🧪 13. Failure Scenarios (All Covered)
 ```
 Scenario                   Outcome
 Bot crash                  systemd restart
@@ -212,7 +213,7 @@ Edit storm                 safe repost
 Update failure             no restart
 ```
 
-### 🏁 FINAL VERDICT
+#### 🏁 FINAL VERDICT
 
 🔥 PRODUCTION-READY: YES
 
@@ -238,11 +239,11 @@ You can confidently:
 
 • Or deploy clones
 
-## Setup on Local Server - (CMD/Termux/Linux)
+### Setup on Local Server - (CMD/Termux/Linux)
 ```
 ```
 
-## Setup on Cloud Server - (Oracle/AWS using Console)
+### Setup on Cloud Server - (Oracle/AWS using Console)
 1️⃣ Update Server & Install Dependencies
 ```
 sudo apt update && sudo apt upgrade -y
@@ -273,7 +274,7 @@ source venv/bin/activate
 python3 bot.py
 ```
 
-### Run 24×7 (optional)
+#### Run 24×7 (optional)
 
 1️⃣ Stop bot
 ```
@@ -298,8 +299,16 @@ sudo systemctl enable telegram-bot-update.timer
 sudo systemctl start telegram-bot-update.timer
 ```
 
-## FAQ
-### Q. Operational visibility
+### FAQ
+
+#### Q. Monitoring & Debugging
+```
+journalctl -u telegram-bot -f
+journalctl -u telegram-bot-update
+systemctl list-timers
+```
+ 
+#### Q. Operational visibility
 ```
 journalctl -u telegram-bot -f
 journalctl -u telegram-bot-update
