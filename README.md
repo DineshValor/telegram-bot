@@ -360,3 +360,11 @@ sudo systemctl restart telegram-bot
 git restore <file>
 git pull
 ```
+### Q. Permissions & ownership (silent killer check)
+```
+ls -l /opt/telegram-bot/systemd/update.sh
+```
+-rwxr-xr-x
+```
+git config --system --get-all safe.directory
+```
