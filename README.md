@@ -13,6 +13,7 @@ telegram-bot/
 ├── requirements.txt
 ├── README.md
 ├── .gitignore
+├── .*.session              # ❌ not committed (server only)
 ├── .env                    # ❌ not committed (server only)
 │
 ├── config/
