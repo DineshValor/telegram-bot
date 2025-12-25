@@ -16,6 +16,9 @@ RestartSec=5
 StartLimitIntervalSec=60
 StartLimitBurst=5
 
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
 Environment=PYTHONUNBUFFERED=1
 
 StandardOutput=journal
