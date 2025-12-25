@@ -259,6 +259,7 @@ cd telegram-bot
 ```
 python3 -m venv venv
 source venv/bin/activate
+deactivate
 ```
 4️⃣ Install dependencies & configure variables
 ```
@@ -285,9 +286,11 @@ cd /opt/telegram-bot
 sudo cp systemd/*.service systemd/*.timer /etc/systemd/system/
 ```
 
-3️⃣ Enable & start services
+3️⃣ Enable & start services (one-time)
 ```
+sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
+
 sudo systemctl enable telegram-bot
 sudo systemctl start telegram-bot
 
