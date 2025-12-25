@@ -260,12 +260,12 @@ cd telegram-bot
 python3 -m venv venv
 source venv/bin/activate
 ```
-3️⃣ Install dependencies & configure variables
+4️⃣ Install dependencies & configure variables
 ```
 pip install -r requirements.txt
 nano .env
 ```
-4️⃣ Start bot
+5️⃣ Start bot
 ```
 cd /opt/telegram-bot
 source venv/bin/activate
