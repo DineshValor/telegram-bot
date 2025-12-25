@@ -33,6 +33,15 @@ echo "[$(date)] 📦 Updating dependencies..."
 "$VENV_DIR/bin/pip" install -r requirements.txt
 
 echo "[$(date)] 🔄 Restarting bot service..."
-systemctl restart "$SERVICE_NAME"
 
-echo "[$(date)] ✅ Update complete."
+if sudo systemctl restart "$SERVICE_NAME"; then
+    echo "[$(date)] ✅ Update complete (sudo)"
+else
+    echo "[$(date)] ⚠️ Sudo restart failed, trying without sudo..."
+    if systemctl restart "$SERVICE_NAME"; then
+        echo "[$(date)] ✅ Update complete (normal)"
+    else
+        echo "[$(date)] ❌ Update failed (both methods)"
+        exit 1
+    fi
+fi
