@@ -1,23 +1,28 @@
 [Unit]
 Description=Telegram Forwarding Bot
-After=network.target
+After=network-online.target
+Wants=network-online.target
 
 [Service]
 Type=simple
 User=ubuntu
+Group=ubuntu
 WorkingDirectory=/opt/telegram-bot
 
 ExecStart=/opt/telegram-bot/venv/bin/python bot.py
 
 Restart=always
 RestartSec=5
+StartLimitIntervalSec=60
+StartLimitBurst=5
 
-# Send stdout/stderr to journal
+Environment=PYTHONUNBUFFERED=1
+
 StandardOutput=journal
 StandardError=journal
 
-# Environment safety
-Environment=PYTHONUNBUFFERED=1
+NoNewPrivileges=true
+PrivateTmp=true
 
 [Install]
 WantedBy=multi-user.target
