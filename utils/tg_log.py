@@ -1,5 +1,5 @@
-import asyncio
 import aiohttp
+import asyncio
 
 from config.env import (
     TELEGRAM_LOG_ENABLED,
@@ -11,6 +11,11 @@ API_URL = "https://api.telegram.org/bot{}/sendMessage"
 
 
 async def send_log(message: str):
+    """
+    Send a log message to Telegram using Bot API.
+    Never crashes the bot.
+    Never writes to disk.
+    """
     if not TELEGRAM_LOG_ENABLED:
         return
 
@@ -19,7 +24,6 @@ async def send_log(message: str):
     payload = {
         "chat_id": TELEGRAM_LOG_CHAT_ID,
         "text": f"🪵 Bot Log\n\n{message}",
-        "parse_mode": "Markdown",
         "disable_web_page_preview": True,
     }
 
@@ -28,5 +32,5 @@ async def send_log(message: str):
             async with session.post(url, json=payload, timeout=10):
                 pass
     except Exception:
-        # Never crash main bot due to logging
+        # Logging must NEVER break the bot
         pass
