@@ -95,8 +95,8 @@ async def moderation_handler(event):
                 await send_reason(
                     topic_id,
                     "Text messages are not allowed in this topic.\n\n"
-                        "👉 Please use "
-                        "[#XFaction-Chat](https://t.me/IngressIN/1)",
+                    "👉 Please use "
+                    "[#XFaction-Chat](https://t.me/IngressIN/1)",
                     msg
                 )
             return
@@ -145,10 +145,26 @@ async def moderation_handler(event):
         if isinstance(media, MessageMediaDocument):
             allowed_ext = rules.get("doc_ext")
 
-            # None = allow all documents
+            # ❌ Block ALL documents
+            if allowed_ext is False:
+                await msg.delete()
+                logger.warning(
+                    "Deleted DOCUMENT | topic=%s | user=%s",
+                    topic_id,
+                    msg.sender_id
+                )
+                await send_reason(
+                    topic_id,
+                    "Documents are not allowed in this topic.",
+                    msg
+                )
+                return
+
+            # ✅ Allow all documents
             if allowed_ext is None:
                 return
 
+            # ✅ Allow only specific extensions
             filename = msg.file.name or ""
             ext = "." + filename.lower().split(".")[-1] if "." in filename else ""
 
@@ -166,6 +182,7 @@ async def moderation_handler(event):
                     f"File type `{ext}` not allowed.\nAllowed: {allowed}",
                     msg
                 )
+            return
 
     except Exception as e:
         logger.exception("Moderation error: %s", e)
