@@ -185,4 +185,7 @@ async def moderation_handler(event):
             return
 
     except Exception as e:
-        logger.exception("Moderation error: %s", e)
+    logger.exception("Moderation error: %s", e)
+
+    from utils.tg_log import send_log
+    await send_log(f"❌ Moderation error:\n`{e}`")
