@@ -54,7 +54,7 @@ FORWARD_TOPIC_RULES = {
     11079: {  # Ingress Updates
         "text": True,
         "photo": True,
-        "video": False,
+        "video": True,
         "doc_ext": {".jpg", ".jpeg", ".png", ".mp4"},
     },
 }
