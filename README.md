@@ -376,13 +376,6 @@ journalctl -u telegram-bot -f
 journalctl -u telegram-bot-update
 systemctl list-timers
 ```
- 
-#### Q. Operational visibility
-```
-journalctl -u telegram-bot -f
-journalctl -u telegram-bot-update
-systemctl list-timers
-```
 
 #### Q. Make update.sh executable
 ```
