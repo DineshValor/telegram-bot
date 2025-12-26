@@ -46,7 +46,7 @@ FORWARD_TOPIC_RULES = {
 
     8201: {  # Mission Banners
         "text": False,
-        "photo": True,
+        "photo": False,
         "video": False,
         "doc_ext": {".jpg", ".jpeg", ".png", ".zip", ".rar"},
     },
