@@ -20,13 +20,14 @@ async def is_bot_or_anonymous_admin(msg):
     - Message sent by the bot itself
     - Message sent by anonymous admin
     """
-    # Bot itself
     me = await client.get_me()
+
+    # Bot itself
     if msg.from_id and isinstance(msg.from_id, PeerUser):
         if msg.from_id.user_id == me.id:
             return True
 
-    # Anonymous admin (no sender but has post_author)
+    # Anonymous admin
     if msg.from_id is None and msg.post_author:
         return True
 
@@ -55,10 +56,36 @@ async def moderation_handler(event):
 
     try:
         # =========================
+        # 🔁 FORWARDED MESSAGES
+        # =========================
+        if msg.fwd_from:
+            forwarded_allowed = rules.get("forwarded_allowed")
+
+            # ❌ Delete all forwarded messages
+            if forwarded_allowed is False:
+                await msg.delete()
+                logger.warning(
+                    "Deleted FORWARDED message | topic=%s | user=%s",
+                    topic_id,
+                    msg.sender_id
+                )
+                await send_reason(
+                    topic_id,
+                    "Forwarded messages are not allowed in this topic.",
+                    msg
+                )
+                return
+
+            # ✅ Allow all forwarded messages
+            if forwarded_allowed is True:
+                return
+            # forwarded_allowed == None → continue to normal rules
+
+        # =========================
         # 📝 TEXT
         # =========================
         if msg.text and not msg.media:
-            if not rules["text"]:
+            if not rules.get("text", False):
                 await msg.delete()
                 logger.warning(
                     "Deleted TEXT | topic=%s | user=%s",
@@ -67,11 +94,9 @@ async def moderation_handler(event):
                 )
                 await send_reason(
                     topic_id,
-                    (
-                        "Text messages are not allowed in this topic.\n\n"
+                    "Text messages are not allowed in this topic.\n\n"
                         "👉 Please use "
-                        "[#XFaction-Chat](https://t.me/IngressIN/1)"
-                    ),
+                        "[#XFaction-Chat](https://t.me/IngressIN/1)",
                     msg
                 )
             return
@@ -82,7 +107,7 @@ async def moderation_handler(event):
         # 🖼 PHOTO
         # =========================
         if isinstance(media, MessageMediaPhoto):
-            if not rules["photo"]:
+            if not rules.get("photo", False):
                 await msg.delete()
                 logger.warning(
                     "Deleted PHOTO | topic=%s | user=%s",
@@ -100,7 +125,7 @@ async def moderation_handler(event):
         # 🎥 VIDEO
         # =========================
         if msg.video:
-            if not rules["video"]:
+            if not rules.get("video", False):
                 await msg.delete()
                 logger.warning(
                     "Deleted VIDEO | topic=%s | user=%s",
@@ -118,10 +143,16 @@ async def moderation_handler(event):
         # 📦 DOCUMENT
         # =========================
         if isinstance(media, MessageMediaDocument):
+            allowed_ext = rules.get("doc_ext")
+
+            # None = allow all documents
+            if allowed_ext is None:
+                return
+
             filename = msg.file.name or ""
             ext = "." + filename.lower().split(".")[-1] if "." in filename else ""
 
-            if ext not in rules["doc_ext"]:
+            if ext not in allowed_ext:
                 await msg.delete()
                 logger.warning(
                     "Deleted DOC %s | topic=%s | user=%s",
@@ -129,7 +160,7 @@ async def moderation_handler(event):
                     topic_id,
                     msg.sender_id
                 )
-                allowed = ", ".join(sorted(rules["doc_ext"]))
+                allowed = ", ".join(sorted(allowed_ext))
                 await send_reason(
                     topic_id,
                     f"File type `{ext}` not allowed.\nAllowed: {allowed}",
