@@ -3,15 +3,15 @@ TOPIC_RULES = {
         "text": True,
         "photo": True,
         "video": True,
-        "forwarded_allowed": True,   # allow all forwarded messages
-        "doc_ext": None,
+        "forwarded_allowed": None,   # follow normal rules
+        "doc_ext": None,   # None = allow all documents
     },
 
     10: {  # BRAGGING RIGHTS
         "text": False,
         "photo": True,
         "video": True,
-        "forwarded_allowed": False,  # delete all forwarded messages
+        "forwarded_allowed": False,   # delete all forwarded messages
         "doc_ext": {".jpg", ".jpeg", ".png", ".mp4"},
     },
 
@@ -19,7 +19,14 @@ TOPIC_RULES = {
         "text": False,
         "photo": True,
         "video": False,
-        "forwarded_allowed": None,   # follow normal rules
+        "forwarded_allowed": False,   # delete all forwarded messages
         "doc_ext": {".jpg", ".jpeg", ".png", ".zip", ".rar"},
+    },
+    11079: {  # Ingress Updates
+        "text": False,
+        "photo": False,
+        "video": False,
+        "forwarded_allowed": True,   # allowed all forwarded messages
+        "doc_ext": False,
     },
 }
