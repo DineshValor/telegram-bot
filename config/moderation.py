@@ -1,4 +1,11 @@
 TOPIC_RULES = {
+    1: {  # XFaction Chat
+        "text": True,
+        "photo": True,
+        "video": True,
+        "doc_ext": None,  # None = allow all documents
+    },
+    
     10: { # BRAGGING RIGHTS
         "text": False,
         "photo": True,
