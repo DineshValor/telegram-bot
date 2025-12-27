@@ -391,3 +391,10 @@ sudo systemctl daemon-reload
 ```
 journalctl -u telegram-bot --no-pager
 ```
+
+#### Q. Overwritten by merge
+```
+git stash
+git pull
+git stash pop
+```
