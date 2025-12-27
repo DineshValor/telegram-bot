@@ -185,4 +185,4 @@ async def moderation_handler(event):
             return
 
     except Exception as e:
-    logger.exception("Moderation error: %s", e)
+        logger.exception("Moderation error: %s", e)
