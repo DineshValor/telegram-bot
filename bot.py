@@ -1,6 +1,10 @@
 from core.startup import start_bot
+from utils.logger import get_logger
 
-import handlers.forward
-import handlers.moderation
+logger = get_logger(__name__)
 
-start_bot()
+if __name__ == "__main__":
+    try:
+        start_bot()
+    except Exception as e:
+        logger.exception("Bot failed to start")
