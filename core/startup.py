@@ -19,7 +19,9 @@ async def shutdown(sig=None):
     except Exception as e:
         logger.exception("Error during shutdown: %s", e)
 
-    sys.exit(0)
+    # Stop the asyncio loop cleanly (NO sys.exit inside async task)
+    loop = asyncio.get_running_loop()
+    loop.stop()
 
 
 def start_bot():
@@ -27,6 +29,7 @@ def start_bot():
 
     loop = asyncio.get_event_loop()
 
+    # Handle system signals properly
     for sig in (signal.SIGINT, signal.SIGTERM):
         loop.add_signal_handler(
             sig, lambda s=sig: asyncio.create_task(shutdown(s))
@@ -35,7 +38,10 @@ def start_bot():
     try:
         client.start()
         logger.info("Telegram bot started successfully")
+
+        # This blocks until disconnect or loop.stop()
         client.run_until_disconnected()
+
     except Exception as e:
         logger.exception("Fatal error: %s", e)
         sys.exit(1)
