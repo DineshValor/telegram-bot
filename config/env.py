@@ -23,6 +23,7 @@ if not API_ID or not API_HASH:
 # Telegram logging (Bot API)
 # =========================
 TELEGRAM_LOG_ENABLED = os.getenv("TELEGRAM_LOG_ENABLED", "false").lower() == "true"
+TELEGRAM_LOG_LEVEL = os.getenv("TELEGRAM_LOG_LEVEL", "ERROR").upper()
 
 TELEGRAM_LOG_BOT_TOKEN = None
 TELEGRAM_LOG_CHAT_ID = None
