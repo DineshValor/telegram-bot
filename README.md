@@ -358,17 +358,19 @@ Update logs:
 journalctl -u telegram-bot-update
 ```
 
-#### 7️⃣ Manual update test (optional but recommended)
+### FAQ
+
+#### Q. Manual update test (optional but recommended)
 
 Run update service manually:
 ```
 sudo systemctl start telegram-bot-update.service
 ```
 Expected behavior:
-• If no new commit → “No updates found”
-• If new commit → pull → restart bot
 
-### FAQ
+• If no new commit → “No updates found”
+
+• If new commit → pull → restart bot
 
 #### Q. Monitoring & Debugging
 ```
