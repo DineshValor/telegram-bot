@@ -4,12 +4,13 @@ import asyncio
 
 from core.client import client
 from utils.logger import setup_logger
+from utils.tg_log import send_log
+
+logger = setup_logger()
 
 
 async def shutdown(sig=None):
     """Gracefully shut down the Telegram client."""
-    logger = logging.getLogger("telegram-bot")
-
     if sig:
         logger.warning("Received signal %s, shutting down...", sig.name)
 
@@ -25,12 +26,9 @@ async def shutdown(sig=None):
 
 
 def start_bot():
-    loop = asyncio.get_event_loop()
-
-    # ✅ Initialize logger WITH event loop (Telegram logging enabled)
-    logger = setup_logger(loop)
-
     logger.info("Starting Telegram bot...")
+
+    loop = asyncio.get_event_loop()
 
     # Handle system signals properly
     for sig in (signal.SIGINT, signal.SIGTERM):
@@ -42,9 +40,23 @@ def start_bot():
         client.start()
         logger.info("Telegram bot started successfully")
 
+        # ✅ WORKING: send startup notification
+        loop.create_task(
+            send_log("✅ Telegram bot started or restarted successfully")
+        )
+
         # Block until disconnected or shutdown
         client.run_until_disconnected()
 
     except Exception as e:
         logger.exception("Fatal error: %s", e)
+
+        # ✅ WORKING: send crash notification
+        try:
+            loop.create_task(
+                send_log(f"❌ Telegram bot crashed:\n{e}")
+            )
+        except Exception:
+            pass
+
         sys.exit(1)
