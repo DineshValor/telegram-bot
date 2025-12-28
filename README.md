@@ -398,3 +398,22 @@ git stash
 git pull
 git stash pop
 ```
+
+#### Q. Quick Commands
+Start bot
+```
+sudo systemctl start telegram-bot
+```
+Restart bot
+```
+sudo systemctl restart telegram-bot
+Stop bot
+```
+Stop bot
+```
+sudo systemctl stop telegram-bot
+```
+View logs
+```
+journalctl -u telegram-bot -f
+```
