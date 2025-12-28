@@ -10,10 +10,6 @@ API_URL = "https://api.telegram.org/bot{}/sendMessage"
 
 
 async def send_log(message: str):
-    """
-    Send a log message to Telegram using Bot API.
-    Safe: never crashes the bot, never writes to disk.
-    """
     if not TELEGRAM_LOG_ENABLED:
         return
 
@@ -30,5 +26,4 @@ async def send_log(message: str):
             async with session.post(url, json=payload, timeout=10):
                 pass
     except Exception:
-        # Logging must NEVER break the bot
         pass
