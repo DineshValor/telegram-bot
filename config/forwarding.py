@@ -28,7 +28,6 @@ CHANNEL_TOPIC_MAP = {
     -1001402896020: 1,        # News_Hackventscalendar
     -1001851154018: 1,        # Ingress.Plus
     -1001003824281: 1,        # Enlightened Today
-    -1001837191055: 1,        # Ingress Auctions
 }
 
 
