@@ -286,7 +286,7 @@ nano /home/ubuntu/telegram-bot/.env
 #### 5️⃣ Make update & journal-watcher script executable
 ```
 chmod +x /home/ubuntu/telegram-bot/systemd/update.sh
-chmod +x /home/ubuntu/telegram-bot/systemd/journal-watcher.sh
+sudo chmod +x /home/ubuntu/telegram-bot/systemd/journal-watcher.sh
 ```
 Verify:
 ```
