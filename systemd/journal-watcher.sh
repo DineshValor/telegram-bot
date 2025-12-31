@@ -57,4 +57,9 @@ while read -r line; do
         send_msg "🔄 IngressIN Bot updated"
     fi
 
+    # ❌ UPDATE FAILED
+    if echo "$line" | grep -qx "telegram-bot update failed"; then
+    send_msg "❌ telegram-bot update failed"
+    fi
+
 done
