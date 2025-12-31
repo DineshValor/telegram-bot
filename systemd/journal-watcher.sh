@@ -46,7 +46,7 @@ while read -r line; do
     fi
 
     if echo "$line" | grep -qx "telegram-bot stopped"; then
-        send_msg "🛑 IngressIN Bot Stopped"
+        send_msg "❌ IngressIN Bot Stopped"
     fi
 
     if echo "$line" | grep -qx "telegram-bot crashed"; then
@@ -54,7 +54,7 @@ while read -r line; do
     fi
 
     if echo "$line" | grep -q "Restarting service: telegram-bot"; then
-        send_msg "♻️ IngressIN Bot Updated"
+        send_msg "🔄 IngressIN Bot Updated"
     fi
 
     # ❌ UPDATE FAILED
