@@ -327,6 +327,8 @@ sudo systemctl daemon-reload
 ```
 sudo systemctl enable telegram-bot
 sudo systemctl start telegram-bot
+sudo systemctl enable telegram-bot-journal-watcher
+sudo systemctl start telegram-bot-journal-watcher
 ```
 Check status:
 ```
