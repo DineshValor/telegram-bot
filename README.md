@@ -316,11 +316,11 @@ CTRL+C (Key Press)
 
 Systemd cannot read files from your repo directly. We must copy them.
 ```
-sudo cp systemd/ubuntu/telegram-bot.service /etc/systemd/system/
-sudo cp systemd/ubuntu/telegram-bot-update.service /etc/systemd/system/
-sudo cp systemd/ubuntu/telegram-bot-update.timer /etc/systemd/system/
-sudo cp systemd/ubuntu/telegram-bot-journal-watcher.service /etc/systemd/system/
-sudo cp systemd/ubuntu/telegram-bot-failure.service /etc/systemd/system/
+sudo cp /home/ubuntu/telegram-bot/systemd/telegram-bot.service /etc/systemd/system/
+sudo cp /home/ubuntu/telegram-bot/systemd/telegram-bot-update.service /etc/systemd/system/
+sudo cp /home/ubuntu/telegram-bot/systemd/telegram-bot-update.timer /etc/systemd/system/
+sudo cp /home/ubuntu/telegram-bot/systemd/telegram-bot-journal-watcher.service /etc/systemd/system/
+sudo cp /home/ubuntu/telegram-bot/systemd/telegram-bot-failure.service /etc/systemd/system/
 ```
 
 #### 3️⃣ Reload systemd
