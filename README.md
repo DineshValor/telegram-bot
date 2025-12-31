@@ -280,6 +280,7 @@ deactivate
 
 #### 4️⃣ Configure variables
 ```
+cp /home/ubuntu/telegram-bot/.env.example /home/ubuntu/telegram-bot/.env
 nano /home/ubuntu/telegram-bot/.env
 ```
 
