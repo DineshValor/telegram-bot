@@ -27,7 +27,12 @@ if [ "$LOCAL_HASH" = "$REMOTE_HASH" ]; then
 fi
 
 echo "Update found. Pulling changes..."
-git pull --ff-only origin "$BRANCH"
+
+# 🔴 IMPORTANT CHANGE: catch pull failure
+if ! git pull --ff-only origin "$BRANCH"; then
+    echo "telegram-bot update failed"
+    exit 1
+fi
 
 echo "Restarting service: $SERVICE_NAME"
 systemctl restart "$SERVICE_NAME"
