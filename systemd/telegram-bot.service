@@ -1,21 +1,21 @@
 [Unit]
 Description=Telegram Userbot
-After=network-online.target
-Wants=network-online.target
+After=network.target
 
 [Service]
 Type=simple
 User=ubuntu
 WorkingDirectory=/home/ubuntu/telegram-bot
+
 EnvironmentFile=/home/ubuntu/telegram-bot/.env
+
 ExecStart=/home/ubuntu/telegram-bot/venv/bin/python bot.py
 
-# ⬇️ ADD THESE (stdout, not metadata)
-ExecStartPost=/bin/echo "telegram-bot started"
-ExecStopPost=/bin/echo "telegram-bot stopped"
-
 Restart=always
-RestartSec=5
+RestartSec=10
+
+KillSignal=SIGTERM
+TimeoutStopSec=30
 
 [Install]
 WantedBy=multi-user.target
