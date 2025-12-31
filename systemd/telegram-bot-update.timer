@@ -1,5 +1,5 @@
 [Unit]
-Description=Auto-check Telegram Bot updates every 60 minutes
+Description=Auto-check Telegram Bot updates once every day.
 
 [Timer]
 OnBootSec=5min
