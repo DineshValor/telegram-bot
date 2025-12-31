@@ -365,6 +365,7 @@ journalctl -u telegram-bot-update
 Run update service manually:
 ```
 sudo systemctl start telegram-bot-update.service
+systemctl status telegram-bot-update.service --no-pager -l
 ```
 Expected behavior:
 
