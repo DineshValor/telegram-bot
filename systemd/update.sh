@@ -33,5 +33,8 @@ git reset --hard "origin/$BRANCH"
 # 🧹 Remove untracked files ONLY if they block tracked paths
 git clean -fd
 
+sudo chmod +x /home/ubuntu/telegram-bot/systemd/update.sh
+sudo chmod +x /home/ubuntu/telegram-bot/systemd/journal-watcher.sh
+
 echo "Restarting service: $SERVICE_NAME"
 systemctl restart "$SERVICE_NAME"
