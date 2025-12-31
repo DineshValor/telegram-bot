@@ -1,0 +1,14 @@
+[Unit]
+Description=Telegram Bot systemd journal watcher
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/home/ubuntu/telegram-bot/systemd/journal-watcher.sh
+Restart=always
+RestartSec=5
+User=root
+
+[Install]
+WantedBy=multi-user.target
