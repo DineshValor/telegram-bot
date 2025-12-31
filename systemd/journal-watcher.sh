@@ -1,8 +1,29 @@
 #!/bin/bash
+set -euo pipefail
 
-# ========= CONFIG =========
-BOT_TOKEN="YOUR_TELEGRAM_BOT_TOKEN"
-CHAT_ID="YOUR_TELEGRAM_CHAT_ID"
+ENV_FILE="/home/ubuntu/telegram-bot/.env"
+
+# =========================
+# Load .env safely
+# =========================
+if [ ! -f "$ENV_FILE" ]; then
+    echo "Env file not found: $ENV_FILE" >&2
+    exit 1
+fi
+
+# Export variables from .env
+set -a
+source "$ENV_FILE"
+set +a
+
+# =========================
+# Required variables check
+# =========================
+: "${TELEGRAM_LOG_BOT_TOKEN:?Missing TELEGRAM_LOG_BOT_TOKEN}"
+: "${TELEGRAM_LOG_CHAT_ID:?Missing TELEGRAM_LOG_CHAT_ID}"
+
+BOT_TOKEN="$TELEGRAM_LOG_BOT_TOKEN"
+CHAT_ID="$TELEGRAM_LOG_CHAT_ID"
 
 SERVICE_NAME="telegram-bot.service"
 UPDATE_SERVICE="telegram-bot-update.service"
