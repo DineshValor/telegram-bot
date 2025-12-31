@@ -330,13 +330,17 @@ sudo systemctl start telegram-bot
 sudo systemctl enable telegram-bot-journal-watcher
 sudo systemctl start telegram-bot-journal-watcher
 ```
-Check status:
+Check telegram-bot status:
 ```
 systemctl status telegram-bot
 ```
 You should see:
 ```
 Active: active (running)
+```
+Check journal-watcher status:
+```
+systemctl status telegram-bot-journal-watcher --no-pager
 ```
 
 #### 5️⃣ Enable & start update timer
