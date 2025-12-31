@@ -8,7 +8,6 @@ BRANCH="master"
 cd "$REPO_DIR"
 
 sudo chmod +x /home/ubuntu/telegram-bot/systemd/update.sh
-
 sudo chmod +x /home/ubuntu/telegram-bot/systemd/journal-watcher.sh
 
 # Ensure this is a git repo
