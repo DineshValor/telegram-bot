@@ -43,18 +43,22 @@ journalctl -f -o cat \
     -u "$UPDATE_SERVICE" |
 while read -r line; do
 
-    if echo "$line" | grep -q "Started Telegram bot"; then
+    # ▶️ BOT START
+    if echo "$line" | grep -q "Started telegram-bot.service"; then
         send_msg "▶️ telegram-bot started"
     fi
 
-    if echo "$line" | grep -q "Stopping Telegram bot"; then
+    # 🛑 BOT STOP
+    if echo "$line" | grep -q "Stopped telegram-bot.service"; then
         send_msg "🛑 telegram-bot stopped"
     fi
 
-    if echo "$line" | grep -Eq "Failed with result|Main process exited"; then
+    # ❌ BOT CRASH / FAILURE
+    if echo "$line" | grep -Eq "telegram-bot.service: Failed with result|Main process exited"; then
         send_msg "❌ telegram-bot crashed or failed"
     fi
 
+    # 🔄 UPDATE / RESTART (already working)
     if echo "$line" | grep -q "Restarting service: telegram-bot"; then
         send_msg "🔄 telegram-bot updated & restarted"
     fi
