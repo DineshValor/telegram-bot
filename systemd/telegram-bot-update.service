@@ -4,5 +4,5 @@ After=network.target
 
 [Service]
 Type=oneshot
-User=ubuntu
+User=root
 ExecStart=/home/ubuntu/telegram-bot/systemd/update.sh
