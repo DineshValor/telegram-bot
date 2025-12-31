@@ -17,7 +17,7 @@ TOPIC_RULES = {
 
     8201: {  # Mission Banners
         "text": False,
-        "photo": True,
+        "photo": False,
         "video": False,
         "forwarded_allowed": True,  # allowed all forwarded messages
         "doc_ext": {".jpg", ".jpeg", ".png", ".zip", ".rar"},
