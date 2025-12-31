@@ -283,13 +283,15 @@ deactivate
 nano /home/ubuntu/telegram-bot/.env
 ```
 
-#### 5️⃣ Make update script executable
+#### 5️⃣ Make update & journal-watcher script executable
 ```
 chmod +x /home/ubuntu/telegram-bot/systemd/update.sh
+chmod +x /home/ubuntu/telegram-bot/systemd/journal-watcher.sh
 ```
 Verify:
 ```
 ls -l /home/ubuntu/telegram-bot/systemd/update.sh
+ls -l /home/ubuntu/telegram-bot/systemd/journal-watcher.sh
 ```
 You should see -rwx.
 
