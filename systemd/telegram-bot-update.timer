@@ -3,7 +3,7 @@ Description=Auto-check Telegram Bot updates every 60 minutes
 
 [Timer]
 OnBootSec=5min
-OnUnitActiveSec=60min
+OnUnitActiveSec=1d
 Persistent=true
 
 [Install]
