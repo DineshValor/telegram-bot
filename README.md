@@ -423,3 +423,8 @@ View logs
 ```
 journalctl -u telegram-bot -f
 ```
+
+#### Q. Fatal: detected dubious ownership in repository at '/home/ubuntu/telegram-bot'
+```
+sudo git config --global --add safe.directory /home/ubuntu/telegram-bot
+```
