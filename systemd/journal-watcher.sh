@@ -50,7 +50,7 @@ while read -r line; do
     fi
 
     if echo "$line" | grep -qx "telegram-bot crashed"; then
-        send_msg "💥 IngressIN Bot crashed"
+        send_msg "💥IngressIN Bot crashed"
     fi
 
     if echo "$line" | grep -q "Restarting service: telegram-bot"; then
