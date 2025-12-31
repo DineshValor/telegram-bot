@@ -42,15 +42,15 @@ journalctl -f -o cat \
 while read -r line; do
 
     if echo "$line" | grep -qx "telegram-bot started"; then
-        send_msg "▶️ telegram-bot started"
+        send_msg "✅ telegram-bot started"
     fi
 
     if echo "$line" | grep -qx "telegram-bot stopped"; then
-        send_msg "🛑 telegram-bot stopped"
+        send_msg "❌ telegram-bot stopped"
     fi
 
     if echo "$line" | grep -qx "telegram-bot crashed"; then
-        send_msg "❌ telegram-bot crashed"
+        send_msg "💥 telegram-bot crashed"
     fi
 
     if echo "$line" | grep -q "Restarting service: telegram-bot"; then
