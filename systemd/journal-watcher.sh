@@ -42,7 +42,7 @@ journalctl -f -o cat \
 while read -r line; do
 
     if echo "$line" | grep -qx "telegram-bot started"; then
-        send_msg " IngressIN Bot started"
+        send_msg "✅ IngressIN Bot started"
     fi
 
     if echo "$line" | grep -qx "telegram-bot stopped"; then
@@ -54,12 +54,12 @@ while read -r line; do
     fi
 
     if echo "$line" | grep -q "Restarting service: telegram-bot"; then
-        send_msg " IngressIN Bot updated"
+        send_msg "♻️ IngressIN Bot updated"
     fi
 
     # ❌ UPDATE FAILED
     if echo "$line" | grep -qx "telegram-bot update failed"; then
-    send_msg "❌ telegram-bot update failed"
+    send_msg "❎ telegram-bot update failed"
     fi
 
 done
