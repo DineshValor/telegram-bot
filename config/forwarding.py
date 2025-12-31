@@ -9,7 +9,7 @@ Forwarding configuration:
 # =========================
 
 CHANNEL_TOPIC_MAP = {
-    -1001268572490: 1,        # Dinesh Valor Channel
+    -1001268572490: 1,        # Dinesh Valor Channel (Test)
     -1003341948290: 1,        # Ingress India Test
     -1001305415858: 15,       # IngressFS Notifications
 
@@ -28,6 +28,7 @@ CHANNEL_TOPIC_MAP = {
     -1001402896020: 1,        # News_Hackventscalendar
     -1001851154018: 1,        # Ingress.Plus
     -1001003824281: 1,        # Enlightened Today
+    -1001075454435: 1,        # RES INDIA News
 }
 
 
