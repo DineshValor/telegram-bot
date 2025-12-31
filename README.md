@@ -274,14 +274,16 @@ git pull origin master
 cd /home/ubuntu/telegram-bot
 python3 -m venv venv
 source venv/bin/activate
+pip install --upgrade pip
 pip install -r requirements.txt
 deactivate
 ```
 
-#### 4️⃣ Configure variables
+#### 4️⃣ Configure variables & secure it
 ```
 cp /home/ubuntu/telegram-bot/.env.example /home/ubuntu/telegram-bot/.env
 nano /home/ubuntu/telegram-bot/.env
+chmod 600 /home/ubuntu/telegram-bot/.env
 ```
 
 #### 5️⃣ Make update & journal-watcher script executable
@@ -326,45 +328,25 @@ sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
 ```
 
-#### 4️⃣ Enable & start the bot
+#### 4️⃣ Enable services
 ```
 sudo systemctl enable telegram-bot
-sudo systemctl start telegram-bot
-```
-Check telegram-bot status:
-```
-systemctl status telegram-bot
-```
-You should see:
-```
-Active: active (running)
-```
-
-#### 5️⃣ Enable & start update timer & journal watcher
-```
 sudo systemctl enable telegram-bot-update.timer
-sudo systemctl start telegram-bot-update.timer
 sudo systemctl enable telegram-bot-journal-watcher
+```
+
+#### 5️⃣ Start services
+```
+sudo systemctl start telegram-bot
 sudo systemctl start telegram-bot-journal-watcher
+sudo systemctl start telegram-bot-update.timer
 ```
-Verify timer:
+
+#### 6️⃣ Verify Status (IMPORTANT)
 ```
-systemctl list-timers | grep telegram-bot
-```
-Verify journal watcher:
-```
+systemctl status telegram-bot --no-pager
 systemctl status telegram-bot-journal-watcher --no-pager
-```
-
-#### 6️⃣ Verify logs (VERY IMPORTANT)
-
-Bot logs:
-```
-journalctl -u telegram-bot -f
-```
-Update logs:
-```
-journalctl -u telegram-bot-update
+systemctl status telegram-bot-update.timer --no-pager
 ```
 
 ### FAQ
