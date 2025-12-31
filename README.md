@@ -279,11 +279,10 @@ pip install -r requirements.txt
 deactivate
 ```
 
-#### 4️⃣ Configure variables & secure it
+#### 4️⃣ Configure variables
 ```
 cp /home/ubuntu/telegram-bot/.env.example /home/ubuntu/telegram-bot/.env
 nano /home/ubuntu/telegram-bot/.env
-chmod 600 /home/ubuntu/telegram-bot/.env
 ```
 
 #### 5️⃣ Make update & journal-watcher script executable
