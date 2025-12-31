@@ -25,9 +25,6 @@ set +a
 BOT_TOKEN="$TELEGRAM_LOG_BOT_TOKEN"
 CHAT_ID="$TELEGRAM_LOG_CHAT_ID"
 
-SERVICE_NAME="telegram-bot.service"
-UPDATE_SERVICE="telegram-bot-update.service"
-
 API_URL="https://api.telegram.org/bot${BOT_TOKEN}/sendMessage"
 
 send_msg() {
@@ -39,28 +36,25 @@ send_msg() {
 }
 
 journalctl -f -o cat \
-    -u "$SERVICE_NAME" \
-    -u "$UPDATE_SERVICE" |
+    -u telegram-bot.service \
+    -u telegram-bot-update.service \
+    -u telegram-bot-failure.service |
 while read -r line; do
 
-    # ▶️ BOT START
-    if echo "$line" | grep -q "Started telegram-bot.service"; then
+    if echo "$line" | grep -qx "telegram-bot started"; then
         send_msg "▶️ telegram-bot started"
     fi
 
-    # 🛑 BOT STOP
-    if echo "$line" | grep -q "Stopped telegram-bot.service"; then
+    if echo "$line" | grep -qx "telegram-bot stopped"; then
         send_msg "🛑 telegram-bot stopped"
     fi
 
-    # ❌ BOT CRASH / FAILURE
-    if echo "$line" | grep -Eq "telegram-bot.service: Failed with result|Main process exited"; then
-        send_msg "❌ telegram-bot crashed or failed"
+    if echo "$line" | grep -qx "telegram-bot crashed"; then
+        send_msg "❌ telegram-bot crashed"
     fi
 
-    # 🔄 UPDATE / RESTART (already working)
     if echo "$line" | grep -q "Restarting service: telegram-bot"; then
-        send_msg "🔄 telegram-bot updated & restarted"
+        send_msg "🔄 telegram-bot updated"
     fi
 
 done
