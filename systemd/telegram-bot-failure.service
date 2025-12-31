@@ -1,0 +1,6 @@
+[Unit]
+Description=Telegram Bot Crash Handler
+
+[Service]
+Type=oneshot
+ExecStart=/bin/echo "telegram-bot crashed"
