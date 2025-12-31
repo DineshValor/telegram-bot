@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -e
 
 REPO_DIR="/home/ubuntu/telegram-bot"
@@ -14,10 +13,10 @@ if [ ! -d ".git" ]; then
     exit 0
 fi
 
-# Fetch latest changes
+echo "Fetching latest changes from GitHub..."
 git fetch origin "$BRANCH"
 
-LOCAL_HASH=$(git rev-parse "$BRANCH")
+LOCAL_HASH=$(git rev-parse HEAD)
 REMOTE_HASH=$(git rev-parse "origin/$BRANCH")
 
 # No updates
@@ -26,13 +25,13 @@ if [ "$LOCAL_HASH" = "$REMOTE_HASH" ]; then
     exit 0
 fi
 
-echo "Update found. Pulling changes..."
+echo "Updates found. Replacing tracked files with GitHub version..."
 
-# 🔴 IMPORTANT CHANGE: catch pull failure
-if ! git pull --ff-only origin "$BRANCH"; then
-    echo "telegram-bot update failed"
-    exit 1
-fi
+# 🔥 Force replace ONLY tracked files
+git reset --hard "origin/$BRANCH"
+
+# 🧹 Remove untracked files ONLY if they block tracked paths
+git clean -fd
 
 echo "Restarting service: $SERVICE_NAME"
 systemctl restart "$SERVICE_NAME"
