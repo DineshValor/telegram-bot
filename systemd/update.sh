@@ -33,9 +33,5 @@ git reset --hard "origin/$BRANCH"
 # 🧹 Remove untracked files (keeps ignored files like .env)
 git clean -fd
 
-# ✅ ENSURE EXECUTABLE PERMISSIONS (SERVER-SIDE SAFETY)
-chmod +x systemd/update.sh
-chmod +x systemd/journal-watcher.sh
-
 echo "Restarting service: $SERVICE_NAME"
 systemctl restart "$SERVICE_NAME"
