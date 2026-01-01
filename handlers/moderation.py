@@ -34,6 +34,19 @@ async def is_bot_or_anonymous_admin(msg):
     return False
 
 
+def get_topic_id(msg):
+    """
+    Telethon-version-safe forum topic resolver
+    """
+    if not msg.reply_to:
+        return None
+
+    return (
+        getattr(msg.reply_to, "top_msg_id", None)
+        or getattr(msg.reply_to, "reply_to_top_id", None)
+    )
+
+
 @client.on(events.NewMessage(chats=TARGET_GROUP))
 async def moderation_handler(event):
     msg = event.message
@@ -41,8 +54,9 @@ async def moderation_handler(event):
     if not msg:
         return
 
-    # Ignore messages outside forum topics
-    if not msg.reply_to or not msg.reply_to.top_msg_id:
+    # ✅ Resolve topic safely (old & new Telethon)
+    topic_id = get_topic_id(msg)
+    if not topic_id:
         return
 
     # Exempt bot & anonymous admins
@@ -52,10 +66,7 @@ async def moderation_handler(event):
     except Exception:
         return
 
-    # ✅ CORRECT topic detection
-    topic_id = msg.reply_to.top_msg_id
     rules = TOPIC_RULES.get(topic_id)
-
     if not rules:
         return
 
@@ -66,7 +77,6 @@ async def moderation_handler(event):
         if msg.fwd_from:
             forwarded_allowed = rules.get("forwarded_allowed")
 
-            # ❌ Delete all forwarded messages
             if forwarded_allowed is False:
                 await msg.delete()
                 logger.warning(
@@ -81,10 +91,8 @@ async def moderation_handler(event):
                 )
                 return
 
-            # ✅ Allow all forwarded messages
             if forwarded_allowed is True:
                 return
-            # forwarded_allowed == None → continue to normal rules
 
         # =========================
         # 📝 TEXT
@@ -150,7 +158,6 @@ async def moderation_handler(event):
         if isinstance(media, MessageMediaDocument):
             allowed_ext = rules.get("doc_ext")
 
-            # ❌ Block ALL documents
             if allowed_ext is False:
                 await msg.delete()
                 logger.warning(
@@ -165,11 +172,9 @@ async def moderation_handler(event):
                 )
                 return
 
-            # ✅ Allow all documents
             if allowed_ext is None:
                 return
 
-            # ✅ Allow only specific extensions
             filename = msg.file.name or ""
             ext = "." + filename.lower().split(".")[-1] if "." in filename else ""
 
