@@ -22,12 +22,9 @@ async def is_bot_or_anonymous_admin(msg):
     """
     me = await client.get_me()
 
-    # Bot itself
     if msg.from_id and isinstance(msg.from_id, PeerUser):
-        if msg.from_id.user_id == me.id:
-            return True
+        return msg.from_id.user_id == me.id
 
-    # Anonymous admin
     if msg.from_id is None and msg.post_author:
         return True
 
@@ -36,25 +33,28 @@ async def is_bot_or_anonymous_admin(msg):
 
 def get_topic_id(msg):
     """
-    Telethon-version-safe forum topic resolver
+    Forum-topic-safe resolver (old & new Telethon)
     """
-    if not msg.reply_to:
-        return None
+    # Replies
+    if msg.reply_to:
+        return (
+            getattr(msg.reply_to, "top_msg_id", None)
+            or getattr(msg.reply_to, "reply_to_top_id", None)
+        )
 
-    return (
-        getattr(msg.reply_to, "top_msg_id", None)
-        or getattr(msg.reply_to, "reply_to_top_id", None)
-    )
+    # Direct topic message
+    if getattr(msg, "is_topic_message", False):
+        return msg.id
+
+    return None
 
 
 @client.on(events.NewMessage(chats=TARGET_GROUP))
 async def moderation_handler(event):
     msg = event.message
-
     if not msg:
         return
 
-    # ✅ Resolve topic safely (old & new Telethon)
     topic_id = get_topic_id(msg)
     if not topic_id:
         return
@@ -72,18 +72,13 @@ async def moderation_handler(event):
 
     try:
         # =========================
-        # 🔁 FORWARDED MESSAGES
+        # 🔁 FORWARDED
         # =========================
         if msg.fwd_from:
-            forwarded_allowed = rules.get("forwarded_allowed")
+            fa = rules.get("forwarded_allowed")
 
-            if forwarded_allowed is False:
+            if fa is False:
                 await msg.delete()
-                logger.warning(
-                    "Deleted FORWARDED | topic=%s | user=%s",
-                    topic_id,
-                    msg.sender_id
-                )
                 await send_reason(
                     topic_id,
                     "Forwarded messages are not allowed in this topic.",
@@ -91,7 +86,7 @@ async def moderation_handler(event):
                 )
                 return
 
-            if forwarded_allowed is True:
+            if fa is True:
                 return
 
         # =========================
@@ -100,11 +95,6 @@ async def moderation_handler(event):
         if msg.text and not msg.media:
             if not rules.get("text", False):
                 await msg.delete()
-                logger.warning(
-                    "Deleted TEXT | topic=%s | user=%s",
-                    topic_id,
-                    msg.sender_id
-                )
                 await send_reason(
                     topic_id,
                     "Text messages are not allowed in this topic.\n\n"
@@ -122,11 +112,6 @@ async def moderation_handler(event):
         if isinstance(media, MessageMediaPhoto):
             if not rules.get("photo", False):
                 await msg.delete()
-                logger.warning(
-                    "Deleted PHOTO | topic=%s | user=%s",
-                    topic_id,
-                    msg.sender_id
-                )
                 await send_reason(
                     topic_id,
                     "Photos are not allowed in this topic.",
@@ -140,11 +125,6 @@ async def moderation_handler(event):
         if msg.video:
             if not rules.get("video", False):
                 await msg.delete()
-                logger.warning(
-                    "Deleted VIDEO | topic=%s | user=%s",
-                    topic_id,
-                    msg.sender_id
-                )
                 await send_reason(
                     topic_id,
                     "Videos are not allowed in this topic.",
@@ -160,11 +140,6 @@ async def moderation_handler(event):
 
             if allowed_ext is False:
                 await msg.delete()
-                logger.warning(
-                    "Deleted DOCUMENT | topic=%s | user=%s",
-                    topic_id,
-                    msg.sender_id
-                )
                 await send_reason(
                     topic_id,
                     "Documents are not allowed in this topic.",
@@ -180,12 +155,6 @@ async def moderation_handler(event):
 
             if ext not in allowed_ext:
                 await msg.delete()
-                logger.warning(
-                    "Deleted DOC %s | topic=%s | user=%s",
-                    ext,
-                    topic_id,
-                    msg.sender_id
-                )
                 allowed = ", ".join(sorted(allowed_ext))
                 await send_reason(
                     topic_id,
