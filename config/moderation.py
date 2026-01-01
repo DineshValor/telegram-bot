@@ -5,7 +5,6 @@ TOPIC_RULES = {
         "video": True,
         "forwarded_allowed": None,   # follow normal rules
         "doc_ext": None,   # None = allow all documents
-        "auto_delete_replies_after": None,
     },
 
     10: {  # BRAGGING RIGHTS
@@ -14,7 +13,6 @@ TOPIC_RULES = {
         "video": True,
         "forwarded_allowed": False,   # delete all forwarded messages
         "doc_ext": {".jpg", ".jpeg", ".png", ".mp4"},
-        "auto_delete_replies_after": 86400,   # 24 hours
     },
 
     8201: {  # Mission Banners
@@ -23,7 +21,6 @@ TOPIC_RULES = {
         "video": False,
         "forwarded_allowed": True,  # allowed all forwarded messages
         "doc_ext": {".jpg", ".jpeg", ".png", ".zip", ".rar"},
-        "auto_delete_replies_after": 30,   # 30 Seconds
     },
     11079: {  # Ingress Updates
         "text": False,
@@ -31,6 +28,5 @@ TOPIC_RULES = {
         "video": False,
         "forwarded_allowed": False,   # delete all forwarded messages
         "doc_ext": False,
-        "auto_delete_replies_after": 30,   # 30 Seconds
     },
 }
