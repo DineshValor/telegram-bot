@@ -41,10 +41,6 @@ async def moderation_handler(event):
     if not msg or not msg.reply_to:
         return
 
-    # Safety: skip already-deleted messages
-    if msg.deleted:
-        return
-
     # Exempt bot & anonymous admins
     try:
         if await is_bot_or_anonymous_admin(msg):
@@ -52,13 +48,11 @@ async def moderation_handler(event):
     except Exception:
         return
 
-    # Resolve forum topic ID (version-safe)
     reply = msg.reply_to
-    topic_id = getattr(reply, "reply_to_top_id", None) or reply.reply_to_msg_id
+    topic_id = reply.reply_to_top_id or reply.reply_to_msg_id
 
     rules = TOPIC_RULES.get(topic_id)
     if not rules:
-        logger.debug("No moderation rules for topic_id=%s", topic_id)
         return
 
     try:
@@ -149,7 +143,6 @@ async def moderation_handler(event):
         if isinstance(media, MessageMediaDocument):
             allowed_ext = rules.get("doc_ext")
 
-            # ❌ Block ALL documents
             if allowed_ext is False:
                 await msg.delete()
                 logger.warning(
@@ -164,11 +157,9 @@ async def moderation_handler(event):
                 )
                 return
 
-            # ✅ Allow all documents
             if allowed_ext is None:
                 return
 
-            # ✅ Allow only specific extensions
             filename = msg.file.name or ""
             ext = "." + filename.lower().split(".")[-1] if "." in filename else ""
 
