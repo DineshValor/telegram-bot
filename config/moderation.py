@@ -5,7 +5,7 @@ TOPIC_RULES = {
         "video": True,
         "forwarded_allowed": None,   # follow normal rules
         "doc_ext": None,   # None = allow all documents
-        "auto_delete_replies_after": None,
+        "auto_delete_replies_after": 3,
     },
 
     10: {  # BRAGGING RIGHTS
