@@ -1,8 +1,8 @@
 from telethon import events
 from telethon.tl.types import (
-    MessageMediaPhoto,
-    MessageMediaDocument,
-    PeerUser,
+MessageMediaPhoto,
+MessageMediaDocument,
+PeerUser,
 )
 
 from core.client import client
@@ -13,142 +13,174 @@ from utils.logger import setup_logger
 
 logger = setup_logger()
 
-
 async def is_bot_or_anonymous_admin(msg):
-    me = await client.get_me()
+"""
+Returns True if:
+- Message sent by the bot itself
+- Message sent by anonymous admin
+"""
+me = await client.get_me()
 
-    # Bot itself
-    if msg.from_id and isinstance(msg.from_id, PeerUser):
-        return msg.from_id.user_id == me.id
+# Bot itself  
+if msg.from_id and isinstance(msg.from_id, PeerUser):  
+    if msg.from_id.user_id == me.id:  
+        return True  
 
-    # Anonymous admin
-    if msg.from_id is None and msg.post_author:
-        return True
+# Anonymous admin  
+if msg.from_id is None and msg.post_author:  
+    return True  
 
-    return False
-
-
-def resolve_topic_id(event, msg):
-    """
-    Resolve forum topic ID safely for:
-    - direct topic messages
-    - replies
-    - nested replies
-    Works on old & new Telethon
-    """
-
-    # 1️⃣ Replies (most reliable)
-    if msg.reply_to:
-        return (
-            getattr(msg.reply_to, "top_msg_id", None)
-            or getattr(msg.reply_to, "reply_to_top_id", None)
-        )
-
-    # 2️⃣ Direct topic message
-    return getattr(event, "topic_id", None)
-
+return False
 
 @client.on(events.NewMessage(chats=TARGET_GROUP))
 async def moderation_handler(event):
-    msg = event.message
-    if not msg:
-        return
+msg = event.message
 
-    topic_id = resolve_topic_id(event, msg)
-    if not topic_id:
-        return  # not a forum topic message
+if not msg or not msg.reply_to:  
+    return  
 
-    # Exempt bot & anonymous admins
-    try:
-        if await is_bot_or_anonymous_admin(msg):
-            return
-    except Exception:
-        return
+# Exempt bot & anonymous admins  
+try:  
+    if await is_bot_or_anonymous_admin(msg):  
+        return  
+except Exception:  
+    return  
 
-    rules = TOPIC_RULES.get(topic_id)
-    if not rules:
-        return
+topic_id = msg.reply_to.reply_to_msg_id  
+rules = TOPIC_RULES.get(topic_id)  
 
-    try:
-        # =========================
-        # 🔁 FORWARDED
-        # =========================
-        if msg.fwd_from:
-            fa = rules.get("forwarded_allowed")
+if not rules:  
+    return  
 
-            if fa is False:
-                await msg.delete()
-                logger.warning("Deleted FORWARDED | topic=%s | user=%s", topic_id, msg.sender_id)
-                await send_reason(topic_id, "Forwarded messages are not allowed in this topic.", msg)
-                return
+try:  
+    # =========================  
+    # 🔁 FORWARDED MESSAGES  
+    # =========================  
+    if msg.fwd_from:  
+        forwarded_allowed = rules.get("forwarded_allowed")  
 
-            if fa is True:
-                return
+        # ❌ Delete all forwarded messages  
+        if forwarded_allowed is False:  
+            await msg.delete()  
+            logger.warning(  
+                "Deleted FORWARDED message | topic=%s | user=%s",  
+                topic_id,  
+                msg.sender_id  
+            )  
+            await send_reason(  
+                topic_id,  
+                "Forwarded messages are not allowed in this topic.",  
+                msg  
+            )  
+            return  
 
-        # =========================
-        # 📝 TEXT
-        # =========================
-        if msg.text and not msg.media:
-            if not rules.get("text", False):
-                await msg.delete()
-                logger.warning("Deleted TEXT | topic=%s | user=%s", topic_id, msg.sender_id)
-                await send_reason(
-                    topic_id,
-                    "Text messages are not allowed in this topic.\n\n"
-                    "👉 Please use [#XFaction-Chat](https://t.me/IngressIN/1)",
-                    msg
-                )
-            return
+        # ✅ Allow all forwarded messages  
+        if forwarded_allowed is True:  
+            return  
+        # forwarded_allowed == None → continue to normal rules  
 
-        media = msg.media
+    # =========================  
+    # 📝 TEXT  
+    # =========================  
+    if msg.text and not msg.media:  
+        if not rules.get("text", False):  
+            await msg.delete()  
+            logger.warning(  
+                "Deleted TEXT | topic=%s | user=%s",  
+                topic_id,  
+                msg.sender_id  
+            )  
+            await send_reason(  
+                topic_id,  
+                "Text messages are not allowed in this topic.\n\n"  
+                "👉 Please use "  
+                "[#XFaction-Chat](https://t.me/IngressIN/1)",  
+                msg  
+            )  
+        return  
 
-        # =========================
-        # 🖼 PHOTO
-        # =========================
-        if isinstance(media, MessageMediaPhoto):
-            if not rules.get("photo", False):
-                await msg.delete()
-                logger.warning("Deleted PHOTO | topic=%s | user=%s", topic_id, msg.sender_id)
-                await send_reason(topic_id, "Photos are not allowed in this topic.", msg)
-            return
+    media = msg.media  
 
-        # =========================
-        # 🎥 VIDEO
-        # =========================
-        if msg.video:
-            if not rules.get("video", False):
-                await msg.delete()
-                logger.warning("Deleted VIDEO | topic=%s | user=%s", topic_id, msg.sender_id)
-                await send_reason(topic_id, "Videos are not allowed in this topic.", msg)
-            return
+    # =========================  
+    # 🖼 PHOTO  
+    # =========================  
+    if isinstance(media, MessageMediaPhoto):  
+        if not rules.get("photo", False):  
+            await msg.delete()  
+            logger.warning(  
+                "Deleted PHOTO | topic=%s | user=%s",  
+                topic_id,  
+                msg.sender_id  
+            )  
+            await send_reason(  
+                topic_id,  
+                "Photos are not allowed in this topic.",  
+                msg  
+            )  
+        return  
 
-        # =========================
-        # 📦 DOCUMENT
-        # =========================
-        if isinstance(media, MessageMediaDocument):
-            allowed_ext = rules.get("doc_ext")
+    # =========================  
+    # 🎥 VIDEO  
+    # =========================  
+    if msg.video:  
+        if not rules.get("video", False):  
+            await msg.delete()  
+            logger.warning(  
+                "Deleted VIDEO | topic=%s | user=%s",  
+                topic_id,  
+                msg.sender_id  
+            )  
+            await send_reason(  
+                topic_id,  
+                "Videos are not allowed in this topic.",  
+                msg  
+            )  
+        return  
 
-            if allowed_ext is False:
-                await msg.delete()
-                logger.warning("Deleted DOCUMENT | topic=%s | user=%s", topic_id, msg.sender_id)
-                await send_reason(topic_id, "Documents are not allowed in this topic.", msg)
-                return
+    # =========================  
+    # 📦 DOCUMENT  
+    # =========================  
+    if isinstance(media, MessageMediaDocument):  
+        allowed_ext = rules.get("doc_ext")  
 
-            if allowed_ext is None:
-                return
+        # ❌ Block ALL documents  
+        if allowed_ext is False:  
+            await msg.delete()  
+            logger.warning(  
+                "Deleted DOCUMENT | topic=%s | user=%s",  
+                topic_id,  
+                msg.sender_id  
+            )  
+            await send_reason(  
+                topic_id,  
+                "Documents are not allowed in this topic.",  
+                msg  
+            )  
+            return  
 
-            filename = msg.file.name or ""
-            ext = "." + filename.lower().split(".")[-1] if "." in filename else ""
+        # ✅ Allow all documents  
+        if allowed_ext is None:  
+            return  
 
-            if ext not in allowed_ext:
-                await msg.delete()
-                logger.warning("Deleted DOC %s | topic=%s | user=%s", ext, topic_id, msg.sender_id)
-                await send_reason(
-                    topic_id,
-                    f"File type `{ext}` not allowed.\nAllowed: {', '.join(sorted(allowed_ext))}",
-                    msg
-                )
-            return
+        # ✅ Allow only specific extensions  
+        filename = msg.file.name or ""  
+        ext = "." + filename.lower().split(".")[-1] if "." in filename else ""  
 
-    except Exception as e:
-        logger.exception("Moderation error: %s", e)
+        if ext not in allowed_ext:  
+            await msg.delete()  
+            logger.warning(  
+                "Deleted DOC %s | topic=%s | user=%s",  
+                ext,  
+                topic_id,  
+                msg.sender_id  
+            )  
+            allowed = ", ".join(sorted(allowed_ext))  
+            await send_reason(  
+                topic_id,  
+                f"File type `{ext}` not allowed.\nAllowed: {allowed}",  
+                msg  
+            )  
+        return  
+
+except Exception as e:  
+    logger.exception("Moderation error: %s", e)
