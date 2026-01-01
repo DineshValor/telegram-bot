@@ -5,6 +5,8 @@ from telethon.tl.types import (
     PeerUser,
 )
 
+import asyncio
+
 from core.client import client
 from config.env import TARGET_GROUP
 from config.moderation import TOPIC_RULES
@@ -34,6 +36,15 @@ async def is_bot_or_anonymous_admin(msg):
     return False
 
 
+async def auto_delete_later(msg, delay: int):
+    """Delete a message after delay (seconds)."""
+    try:
+        await asyncio.sleep(delay)
+        await msg.delete()
+    except Exception:
+        pass
+
+
 @client.on(events.NewMessage(chats=TARGET_GROUP))
 async def moderation_handler(event):
     msg = event.message
@@ -55,6 +66,21 @@ async def moderation_handler(event):
         return
 
     try:
+        # =========================
+        # ⏳ AUTO DELETE REPLIES
+        # =========================
+        auto_delete_delay = rules.get("auto_delete_replies_after")
+
+        # Reply inside topic (not the topic root message)
+        if (
+            auto_delete_delay
+            and msg.reply_to
+            and msg.id != topic_id
+        ):
+            asyncio.create_task(
+                auto_delete_later(msg, auto_delete_delay)
+            )
+
         # =========================
         # 🔁 FORWARDED MESSAGES
         # =========================
