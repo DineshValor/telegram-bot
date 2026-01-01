@@ -65,6 +65,13 @@ async def moderation_handler(event):
     if not rules:
         return
 
+    logger.info(
+    "AUTO-DEL CHECK | msg_id=%s topic_id=%s delay=%s",
+    msg.id,
+    topic_id,
+    rules.get("auto_delete_replies_after")
+    )
+
     try:
         # =========================
         # ⏳ AUTO DELETE REPLIES
