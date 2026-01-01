@@ -38,7 +38,11 @@ async def is_bot_or_anonymous_admin(msg):
 async def moderation_handler(event):
     msg = event.message
 
-    if not msg or not msg.reply_to:
+    if not msg:
+        return
+
+    # Ignore messages outside forum topics
+    if not msg.reply_to or not msg.reply_to.top_msg_id:
         return
 
     # Exempt bot & anonymous admins
@@ -48,7 +52,8 @@ async def moderation_handler(event):
     except Exception:
         return
 
-    topic_id = msg.reply_to.reply_to_msg_id
+    # ✅ CORRECT topic detection
+    topic_id = msg.reply_to.top_msg_id
     rules = TOPIC_RULES.get(topic_id)
 
     if not rules:
@@ -65,7 +70,7 @@ async def moderation_handler(event):
             if forwarded_allowed is False:
                 await msg.delete()
                 logger.warning(
-                    "Deleted FORWARDED message | topic=%s | user=%s",
+                    "Deleted FORWARDED | topic=%s | user=%s",
                     topic_id,
                     msg.sender_id
                 )
