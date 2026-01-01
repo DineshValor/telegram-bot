@@ -31,6 +31,6 @@ TOPIC_RULES = {
         "video": False,
         "forwarded_allowed": False,   # delete all forwarded messages
         "doc_ext": False,
-        "auto_delete_replies_after": 1,   # 1 Second
+        "auto_delete_replies_after": 3,   # 3 Second
     },
 }
