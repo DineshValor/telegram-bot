@@ -49,13 +49,9 @@ async def moderation_handler(event):
         return
 
     reply = msg.reply_to
+    topic_id = reply.reply_to_top_id or reply.reply_to_msg_id
 
-topic_id = (
-    reply.reply_to_top_id
-    or reply.reply_to_msg_id
-)
     rules = TOPIC_RULES.get(topic_id)
-
     if not rules:
         return
 
@@ -66,7 +62,6 @@ topic_id = (
         if msg.fwd_from:
             forwarded_allowed = rules.get("forwarded_allowed")
 
-            # ❌ Delete all forwarded messages
             if forwarded_allowed is False:
                 await msg.delete()
                 logger.warning(
@@ -81,10 +76,8 @@ topic_id = (
                 )
                 return
 
-            # ✅ Allow all forwarded messages
             if forwarded_allowed is True:
                 return
-            # forwarded_allowed == None → continue to normal rules
 
         # =========================
         # 📝 TEXT
@@ -150,7 +143,6 @@ topic_id = (
         if isinstance(media, MessageMediaDocument):
             allowed_ext = rules.get("doc_ext")
 
-            # ❌ Block ALL documents
             if allowed_ext is False:
                 await msg.delete()
                 logger.warning(
@@ -165,11 +157,9 @@ topic_id = (
                 )
                 return
 
-            # ✅ Allow all documents
             if allowed_ext is None:
                 return
 
-            # ✅ Allow only specific extensions
             filename = msg.file.name or ""
             ext = "." + filename.lower().split(".")[-1] if "." in filename else ""
 
