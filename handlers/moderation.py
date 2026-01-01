@@ -15,11 +15,6 @@ logger = setup_logger()
 
 
 async def is_bot_or_anonymous_admin(msg):
-    """
-    Returns True if:
-    - Message sent by the bot itself
-    - Message sent by anonymous admin
-    """
     me = await client.get_me()
 
     if msg.from_id and isinstance(msg.from_id, PeerUser):
@@ -32,9 +27,6 @@ async def is_bot_or_anonymous_admin(msg):
 
 
 def get_topic_id(msg):
-    """
-    Forum-topic-safe resolver (old & new Telethon)
-    """
     # Replies
     if msg.reply_to:
         return (
