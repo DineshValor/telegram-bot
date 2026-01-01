@@ -65,11 +65,13 @@ async def moderation_handler(event):
     if not rules:
         return
 
+    # 🔍 DEBUG: Auto-delete rule check
     logger.info(
-    "AUTO-DEL CHECK | msg_id=%s topic_id=%s delay=%s",
-    msg.id,
-    topic_id,
-    rules.get("auto_delete_replies_after")
+        "AUTO-DEL CHECK | msg_id=%s topic_id=%s delay=%s reply_to=%s",
+        msg.id,
+        topic_id,
+        rules.get("auto_delete_replies_after"),
+        msg.reply_to.reply_to_msg_id if msg.reply_to else None,
     )
 
     try:
@@ -84,6 +86,13 @@ async def moderation_handler(event):
             and msg.reply_to
             and msg.id != topic_id
         ):
+            logger.info(
+                "AUTO-DEL SCHEDULED | msg_id=%s topic_id=%s delete_after=%ss",
+                msg.id,
+                topic_id,
+                auto_delete_delay,
+            )
+
             asyncio.create_task(
                 auto_delete_later(msg, auto_delete_delay)
             )
