@@ -38,29 +38,19 @@ async def is_bot_or_anonymous_admin(msg):
 async def moderation_handler(event):
     msg = event.message
 
-    # =========================
-    # ✅ FIX #1: moderate ALL messages
-    # =========================
-    if not msg:
+    if not msg or not msg.reply_to:
         return
 
-    # =========================
     # Exempt bot & anonymous admins
-    # =========================
     try:
         if await is_bot_or_anonymous_admin(msg):
             return
     except Exception:
         return
 
-    # =========================
-    # ✅ FIX #2: correct topic detection
-    # =========================
-    topic_id = msg.reply_to_top_id
-    if not topic_id:
-        return
-
+    topic_id = msg.reply_to.reply_to_msg_id
     rules = TOPIC_RULES.get(topic_id)
+
     if not rules:
         return
 
@@ -71,10 +61,11 @@ async def moderation_handler(event):
         if msg.fwd_from:
             forwarded_allowed = rules.get("forwarded_allowed")
 
+            # ❌ Delete all forwarded messages
             if forwarded_allowed is False:
                 await msg.delete()
                 logger.warning(
-                    "Deleted FORWARDED | topic=%s | user=%s",
+                    "Deleted FORWARDED message | topic=%s | user=%s",
                     topic_id,
                     msg.sender_id
                 )
@@ -85,15 +76,15 @@ async def moderation_handler(event):
                 )
                 return
 
+            # ✅ Allow all forwarded messages
             if forwarded_allowed is True:
                 return
-            # None → continue to normal rules
+            # forwarded_allowed == None → continue to normal rules
 
         # =========================
         # 📝 TEXT
         # =========================
-        # ✅ FIX #3: correct text detection (works for replies)
-        if msg.text and not msg.file:
+        if msg.text and not msg.media:
             if not rules.get("text", False):
                 await msg.delete()
                 logger.warning(
@@ -103,7 +94,9 @@ async def moderation_handler(event):
                 )
                 await send_reason(
                     topic_id,
-                    "Text messages are not allowed in this topic.",
+                    "Text messages are not allowed in this topic.\n\n"
+                    "👉 Please use "
+                    "[#XFaction-Chat](https://t.me/IngressIN/1)",
                     msg
                 )
             return
@@ -152,6 +145,7 @@ async def moderation_handler(event):
         if isinstance(media, MessageMediaDocument):
             allowed_ext = rules.get("doc_ext")
 
+            # ❌ Block ALL documents
             if allowed_ext is False:
                 await msg.delete()
                 logger.warning(
@@ -166,9 +160,11 @@ async def moderation_handler(event):
                 )
                 return
 
+            # ✅ Allow all documents
             if allowed_ext is None:
                 return
 
+            # ✅ Allow only specific extensions
             filename = msg.file.name or ""
             ext = "." + filename.lower().split(".")[-1] if "." in filename else ""
 
