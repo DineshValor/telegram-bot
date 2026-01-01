@@ -48,7 +48,7 @@ async def moderation_handler(event):
     except Exception:
         return
 
-    topic_id = msg.reply_to.reply_to_msg_id
+    topic_id = msg.reply_to.top_msg_id
     rules = TOPIC_RULES.get(topic_id)
 
     if not rules:
