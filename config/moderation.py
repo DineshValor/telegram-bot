@@ -1,8 +1,8 @@
 TOPIC_RULES = {
     1: {  # XFaction Chat
-        "text": True,
-        "photo": True,
-        "video": True,
+        "text": None,
+        "photo": None,
+        "video": None,
         "forwarded_allowed": None,   # follow normal rules
         "doc_ext": None,   # None = allow all documents
     },
@@ -11,7 +11,7 @@ TOPIC_RULES = {
         "text": False,
         "photo": True,
         "video": True,
-        "forwarded_allowed": False,   # delete all forwarded messages
+        "forwarded_allowed": True,   # delete all forwarded messages
         "doc_ext": {".jpg", ".jpeg", ".png", ".mp4"},
     },
 
