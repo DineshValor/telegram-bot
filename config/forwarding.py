@@ -14,7 +14,7 @@ CHANNEL_TOPIC_MAP = {
     -1001170454563: 11079,    # Ingress Official
     -1001008795454: 11079,    # Passcodes Ingress PRIME
     -1001126789733: 11079,    # Ingress Passcodes
-    -1001093134636, 11079,    # Ingress Passcodes [RES]
+    -1001093134636: 11079,    # Ingress Passcodes [RES]
     -1003307267310: 11079,    # Ingress India 🇮🇳 Passcodes
 
     -1001075281753: 8201,     # Mission Banners, Oh My!
