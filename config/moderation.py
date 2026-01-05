@@ -26,7 +26,7 @@ TOPIC_RULES = {
         "text": False,
         "photo": False,
         "video": False,
-        "forwarded_allowed": True,   # allowed all forwarded messages
+        "forwarded_allowed": False,   # delete all forwarded messages
         "doc_ext": False,
     },
 }
