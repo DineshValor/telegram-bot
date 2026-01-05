@@ -11,7 +11,7 @@ TOPIC_RULES = {
         "text": False,
         "photo": True,
         "video": True,
-        "forwarded_allowed": True,   # delete all forwarded messages
+        "forwarded_allowed": False,   # delete all forwarded messages
         "doc_ext": {".jpg", ".jpeg", ".png", ".mp4"},
     },
 
@@ -26,7 +26,7 @@ TOPIC_RULES = {
         "text": False,
         "photo": False,
         "video": False,
-        "forwarded_allowed": False,   # delete all forwarded messages
+        "forwarded_allowed": True,   # allowed all forwarded messages
         "doc_ext": False,
     },
 }
