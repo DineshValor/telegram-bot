@@ -4,7 +4,7 @@ After=network-online.target
 Wants=network-online.target
 OnFailure=telegram-bot-failure.service
 
-StartLimitIntervalSec=300
+StartLimitIntervalSec=60
 StartLimitBurst=5
 
 [Service]
