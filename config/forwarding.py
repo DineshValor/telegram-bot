@@ -9,13 +9,11 @@ Forwarding configuration:
 # =========================
 
 CHANNEL_TOPIC_MAP = {
-    -1001268572490: 1,        # Dinesh Valor Channel (Test)
     -1001305415858: 15,       # IngressFS Notifications
 
     -1001008795454: 11079,    # Passcodes Ingress PRIME
-    -1001170454563: 11079,    # Ingress
+    -1001170454563: 11079,    # Ingress Official
     -1001126789733: 11079,    # Ingress Passcodes
-    -1003666179367: 11079,    # Ingress India 🇮🇳 Passcodes
 
     -1001075281753: 8201,     # Mission Banners, Oh My!
     -1001078001228: 8201,     # #MissionProject
