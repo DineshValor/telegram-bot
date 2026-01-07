@@ -6,6 +6,8 @@ from telethon.tl.types import (
     MessageMediaPhoto,
     MessageMediaDocument,
     MessageMediaWebPage,
+    MessageEntityUrl,
+    MessageEntityTextUrl,
 )
 
 from core.client import client
@@ -18,18 +20,36 @@ logger = setup_logger()
 FORWARDED_MAP = {}
 
 
+def _is_link_only_entity_message(msg):
+    """
+    True if message contains ONLY URL entities and no real text/media
+    """
+    if not msg.entities:
+        return False
+
+    for ent in msg.entities:
+        if not isinstance(ent, (MessageEntityUrl, MessageEntityTextUrl)):
+            return False
+
+    return True
+
+
 def allowed_by_topic_rules(msg, topic_id):
     rules = FORWARD_TOPIC_RULES.get(topic_id)
 
     if not rules:
         return True
 
-    # Embedded link-only message (Telegram preview)
+    # Case 1: Telegram web preview
+    if isinstance(msg.media, MessageMediaWebPage):
+        return rules.get("link", rules.get("text", False))
+
+    # Case 2: Link-only message without preview (URL entities only)
     if (
-        not msg.text
-        and isinstance(msg.media, MessageMediaWebPage)
+        not msg.media
+        and not msg.text
+        and _is_link_only_entity_message(msg)
     ):
-        # Fallback: if "link" not defined, follow "text"
         return rules.get("link", rules.get("text", False))
 
     # Plain text (including text + link)
