@@ -39,9 +39,10 @@ CHANNEL_TOPIC_MAP = {
 
 FORWARD_TOPIC_RULES = {
     1: {  # XFaction Chat
-        "text": None,
-        "photo": None,
-        "video": None,
+        "text": True,
+        "link": True,
+        "photo": True,
+        "video": True,
         "doc_ext": None,
     },
 
