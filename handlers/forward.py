@@ -45,7 +45,7 @@ def allowed_by_topic_rules(msg, topic_id):
 
 async def safe_forward(msg, topic_id):
     try:
-        fwd = await client.send_message(
+        fwd = await client.forward_messages(
             TARGET_GROUP,
             msg,
             reply_to=topic_id
