@@ -43,7 +43,7 @@ FORWARD_TOPIC_RULES = {
         "link": True,     # ✅ NEW: embedded link previews
         "photo": True,
         "video": True,
-        "doc_ext": True,
+        "doc_ext": None,
     },
 
     8201: {  # Mission Banners
