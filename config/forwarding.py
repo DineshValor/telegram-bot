@@ -39,11 +39,11 @@ CHANNEL_TOPIC_MAP = {
 
 FORWARD_TOPIC_RULES = {
     1: {  # XFaction Chat
-        "text": True,
-        "link": True,     # ✅ NEW: embedded link previews
-        "photo": True,
-        "video": True,
-        "doc_ext": True,
+        "text": None,
+        "link": None,     # ✅ NEW: embedded link previews
+        "photo": None,
+        "video": None,
+        "doc_ext": None,
     },
 
     8201: {  # Mission Banners
