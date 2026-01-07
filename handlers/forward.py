@@ -2,7 +2,7 @@ import asyncio
 
 from telethon import events
 from telethon.errors import FloodWaitError
-from telethon.tl.types import MessageMediaPhoto, MessageMediaDocument
+from telethon.tl.types import MessageMediaPhoto, MessageMediaDocument, MessageMediaWebPage
 
 from core.client import client
 from config.env import TARGET_GROUP
@@ -20,8 +20,12 @@ def allowed_by_topic_rules(msg, topic_id):
     if not rules:
         return True
 
-    if msg.text and not msg.media:
-        return rules.get("text", False)
+    # Embedded link-only message (Telegram preview)
+if (
+    not msg.text
+    and isinstance(msg.media, MessageMediaWebPage)
+):
+    return rules.get("link", rules.get("text", False))
 
     media = msg.media
 
