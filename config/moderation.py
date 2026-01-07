@@ -23,7 +23,7 @@ TOPIC_RULES = {
         "doc_ext": {".jpg", ".jpeg", ".png", ".zip", ".rar"},
     },
     11079: {  # Ingress Updates
-        "text": False,
+        "text": True,
         "photo": False,
         "video": False,
         "forwarded_allowed": False,   # delete all forwarded messages
