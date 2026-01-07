@@ -20,6 +20,14 @@ def allowed_by_topic_rules(msg, topic_id):
     if not rules:
         return True
 
+    # Allow link-only embedded messages as text
+    if (
+        msg.text is None
+        and msg.raw_text
+        and msg.web_preview
+    ):
+        return rules.get("text", False)
+
     if msg.text and not msg.media:
         return rules.get("text", False)
 
@@ -41,7 +49,6 @@ def allowed_by_topic_rules(msg, topic_id):
         return ext in allowed
 
     return False
-
 
 async def safe_forward(msg, topic_id):
     try:
