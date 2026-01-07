@@ -38,8 +38,13 @@ CHANNEL_TOPIC_MAP = {
 # =========================
 
 FORWARD_TOPIC_RULES = {
+    1: {  # XFaction Chat
+        "text": True,
+        "photo": True,
+        "video": True,
+        "doc_ext": None,  # None = allow all documents
+    },
     
-
     8201: {  # Mission Banners
         "text": False,
         "photo": False,
