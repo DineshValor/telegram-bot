@@ -1,4 +1,5 @@
 import asyncio
+import re
 
 from telethon import events
 from telethon.errors import FloodWaitError
@@ -19,19 +20,14 @@ logger = setup_logger()
 
 FORWARDED_MAP = {}
 
+URL_RE = re.compile(r"https?://\S+", re.IGNORECASE)
 
-def _is_link_only_entity_message(msg):
-    """
-    True if message contains ONLY URL entities and no real text/media
-    """
-    if not msg.entities:
+
+def _is_raw_link_only(msg):
+    if not msg.raw_text:
         return False
-
-    for ent in msg.entities:
-        if not isinstance(ent, (MessageEntityUrl, MessageEntityTextUrl)):
-            return False
-
-    return True
+    text = msg.raw_text.strip()
+    return bool(URL_RE.fullmatch(text))
 
 
 def allowed_by_topic_rules(msg, topic_id):
@@ -44,12 +40,16 @@ def allowed_by_topic_rules(msg, topic_id):
     if isinstance(msg.media, MessageMediaWebPage):
         return rules.get("link", rules.get("text", False))
 
-    # Case 2: Link-only message without preview (URL entities only)
-    if (
-        not msg.media
-        and not msg.text
-        and _is_link_only_entity_message(msg)
-    ):
+    # Case 2: URL entities only
+    if msg.entities:
+        for ent in msg.entities:
+            if not isinstance(ent, (MessageEntityUrl, MessageEntityTextUrl)):
+                break
+        else:
+            return rules.get("link", rules.get("text", False))
+
+    # Case 3: Raw URL only (NO preview, NO entities)
+    if not msg.media and not msg.text and _is_raw_link_only(msg):
         return rules.get("link", rules.get("text", False))
 
     # Plain text (including text + link)
