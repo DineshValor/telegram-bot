@@ -22,11 +22,4 @@ TOPIC_RULES = {
         "forwarded_allowed": True,  # allowed all forwarded messages
         "doc_ext": {".jpg", ".jpeg", ".png", ".zip", ".rar"},
     },
-    11079: {  # Ingress Updates
-        "text": False,
-        "photo": False,
-        "video": False,
-        "forwarded_allowed": False,   # delete all forwarded messages
-        "doc_ext": False,
-    },
 }
