@@ -55,6 +55,6 @@ FORWARD_TOPIC_RULES = {
         "text": True,
         "photo": True,
         "video": True,
-        "doc_ext": {".jpg", ".jpeg", ".png", ".mp4"},
+        "doc_ext": None,
     },
 }
