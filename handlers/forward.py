@@ -1,5 +1,7 @@
 import asyncio
 import re
+import hashlib
+import time
 
 from telethon import events
 from telethon.errors import FloodWaitError
@@ -22,6 +24,40 @@ FORWARDED_MAP = {}
 
 URL_RE = re.compile(r"https?://\S+", re.IGNORECASE)
 
+# =========================
+# Content dedup (NEW)
+# =========================
+
+DEDUP_CACHE = {}  # fingerprint -> timestamp
+DEDUP_TTL = 6 * 60 * 60  # 6 hours
+
+
+def _dedup_cleanup():
+    now = time.time()
+    for k, ts in list(DEDUP_CACHE.items()):
+        if now - ts > DEDUP_TTL:
+            del DEDUP_CACHE[k]
+
+
+def _make_fingerprint(msg):
+    parts = []
+
+    if msg.text:
+        parts.append(msg.text.strip())
+
+    if msg.media:
+        parts.append(type(msg.media).__name__)
+        if msg.file:
+            parts.append(str(msg.file.size or ""))
+            parts.append(str(msg.file.id or ""))
+
+    raw = "|".join(parts)
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
+# =========================
+# Helpers
+# =========================
 
 def _is_raw_link_only(msg):
     if not msg.raw_text:
@@ -48,11 +84,11 @@ def allowed_by_topic_rules(msg, topic_id):
         else:
             return rules.get("link", rules.get("text", False))
 
-    # Case 3: Raw URL only (NO preview, NO entities)
+    # Case 3: Raw URL only
     if not msg.media and not msg.text and _is_raw_link_only(msg):
         return rules.get("link", rules.get("text", False))
 
-    # Plain text (including text + link)
+    # Plain text
     if msg.text and not msg.media:
         return rules.get("text", False)
 
@@ -76,6 +112,10 @@ def allowed_by_topic_rules(msg, topic_id):
     return False
 
 
+# =========================
+# Forwarding
+# =========================
+
 async def safe_forward(msg, topic_id):
     try:
         fwd = await client.send_message(
@@ -96,6 +136,10 @@ async def safe_forward(msg, topic_id):
         return None
 
 
+# =========================
+# New message handler
+# =========================
+
 @client.on(events.NewMessage(chats=list(CHANNEL_TOPIC_MAP.keys())))
 async def forward_handler(event):
     msg = event.message
@@ -112,8 +156,24 @@ async def forward_handler(event):
         )
         return
 
+    # 🔒 Dedup ONLY for new messages
+    _dedup_cleanup()
+    fingerprint = _make_fingerprint(msg)
+    if fingerprint in DEDUP_CACHE:
+        logger.info(
+            "Skipped duplicate new message (content match) msg_id=%s",
+            msg.id
+        )
+        return
+
+    DEDUP_CACHE[fingerprint] = time.time()
+
     await safe_forward(msg, topic_id)
 
+
+# =========================
+# Album handler (unchanged)
+# =========================
 
 @client.on(events.Album(chats=list(CHANNEL_TOPIC_MAP.keys())))
 async def album_handler(event):
@@ -139,6 +199,10 @@ async def album_handler(event):
     except Exception as e:
         logger.exception("Album forward failed: %s", e)
 
+
+# =========================
+# Edit handler (STOCK BEHAVIOR)
+# =========================
 
 @client.on(events.MessageEdited(chats=list(CHANNEL_TOPIC_MAP.keys())))
 async def edit_handler(event):
