@@ -9,7 +9,7 @@ Forwarding configuration:
 # =========================
 
 CHANNEL_TOPIC_MAP = {
-    -5291719056: 1,  # Ingress India 🇮🇳 Test
+    -5291719056: 3077,  # Ingress India 🇮🇳 Test
     -1001305415858: 15,       # IngressFS Notifications
 
     -1001170454563: 11079,    # Ingress Official
@@ -57,4 +57,8 @@ FORWARD_TOPIC_RULES = {
         "dedup_new": True,          # dedup duplicate NEW messages
         "dedup_include_edits": True, # STRICT MODE (record edits too)
     },
+
+    3077: {  # Random Media (SFW)
+        "dedup_new": True,
+        "dedup_include_edits": True,
 }
