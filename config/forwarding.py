@@ -44,6 +44,8 @@ FORWARD_TOPIC_RULES = {
         "photo": True,
         "video": True,
         "doc_ext": None,
+        "dedup_new": True,          # dedup duplicate NEW messages
+        "dedup_include_edits": True, # STRICT MODE (record edits too)
     },
 
     8201: {  # Mission Banners
@@ -52,5 +54,7 @@ FORWARD_TOPIC_RULES = {
         "photo": False,
         "video": False,
         "doc_ext": {".jpg", ".jpeg", ".png", ".zip", ".rar"},
+        "dedup_new": True,          # dedup duplicate NEW messages
+        "dedup_include_edits": True, # STRICT MODE (record edits too)
     },
 }
