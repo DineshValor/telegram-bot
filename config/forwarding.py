@@ -10,6 +10,7 @@ Forwarding configuration:
 
 CHANNEL_TOPIC_MAP = {
     -5291719056: 1,  # Ingress India 🇮🇳 Test
+    
     -1001305415858: 15,       # IngressFS Notifications
 
     -1001170454563: 11079,    # Ingress Official
@@ -25,11 +26,8 @@ CHANNEL_TOPIC_MAP = {
     -1002105354149: 1,        # Ingress World Wide Competition 2025
     -1001167466234: 1,        # NotNiantic Updates
     -1001077599821: 1,        # Ingress Updates [ENG]
-    -1001064978090: 1,        # RGNN Ticker
     -1001402896020: 1,        # News_Hackventscalendar
     -1001851154018: 1,        # Ingress.Plus
-    -1001003824281: 1,        # Enlightened Today
-    -1001075454435: 1,        # RES INDIA News
 }
 
 
