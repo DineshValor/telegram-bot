@@ -56,22 +56,22 @@ FORWARD_TOPIC_RULES = {
         "dedup_include_edits": True,
     },
 
-    8201: {  # Mission Banners
-        "text": False,
-        "link": True,
-        "photo": False,
-        "video": False,
-        "doc_ext": {".jpg", ".jpeg", ".png", ".zip", ".rar"},
-        "dedup_new": True,
-        "dedup_include_edits": True,
-    },
-
     10: {  # BRAGGING RIGHTS
         "text": False,
         "link": False,
         "photo": False,
         "video": False,
         "doc_ext": False,
+        "dedup_new": True,
+        "dedup_include_edits": True,
+    },
+
+    8201: {  # Mission Banners
+        "text": False,
+        "link": True,
+        "photo": False,
+        "video": False,
+        "doc_ext": {".jpg", ".jpeg", ".png", ".zip", ".rar"},
         "dedup_new": True,
         "dedup_include_edits": True,
     },
