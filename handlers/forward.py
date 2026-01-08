@@ -15,11 +15,7 @@ from telethon.tl.types import (
 
 from core.client import client
 from config.env import TARGET_GROUP
-from config.forwarding import (
-    CHANNEL_TOPIC_MAP,
-    FORWARD_TOPIC_RULES,
-    DEDUP_TOPIC_RULES,
-)
+from config.forwarding import CHANNEL_TOPIC_MAP, FORWARD_TOPIC_RULES
 from utils.logger import setup_logger
 
 logger = setup_logger()
@@ -38,15 +34,15 @@ DEDUP_TTL = 6 * 60 * 60  # 6 hours
 
 def _dedup_cleanup():
     now = time.time()
-    for k, ts in list(DEDUP_CACHE.items()):
+    for key, ts in list(DEDUP_CACHE.items()):
         if now - ts > DEDUP_TTL:
-            del DEDUP_CACHE[k]
+            del DEDUP_CACHE[key]
 
 
 def _make_fingerprint(msg):
     parts = []
 
-    # Visible content
+    # Visible content (most important)
     if msg.raw_text:
         parts.append(msg.raw_text.strip())
     elif msg.text:
@@ -79,9 +75,11 @@ def allowed_by_topic_rules(msg, topic_id):
     if not rules:
         return True
 
+    # Web preview
     if isinstance(msg.media, MessageMediaWebPage):
         return rules.get("link", rules.get("text", False))
 
+    # URL entities only
     if msg.entities:
         for ent in msg.entities:
             if not isinstance(ent, (MessageEntityUrl, MessageEntityTextUrl)):
@@ -89,9 +87,11 @@ def allowed_by_topic_rules(msg, topic_id):
         else:
             return rules.get("link", rules.get("text", False))
 
+    # Raw URL only
     if not msg.media and not msg.text and _is_raw_link_only(msg):
         return rules.get("link", rules.get("text", False))
 
+    # Plain text
     if msg.text and not msg.media:
         return rules.get("text", False)
 
@@ -151,16 +151,18 @@ async def forward_handler(event):
     if not msg or not topic_id:
         return
 
+    topic_rules = FORWARD_TOPIC_RULES.get(topic_id, {})
+
     if not allowed_by_topic_rules(msg, topic_id):
         logger.info(
-            "SKIP topic_rules msg_id=%s topic=%s",
-            msg.id,
-            topic_id
+            "SKIP topic_rules topic=%s msg_id=%s",
+            topic_id,
+            msg.id
         )
         return
 
-    dedup_cfg = DEDUP_TOPIC_RULES.get(topic_id)
-    if dedup_cfg and dedup_cfg.get("dedup_new"):
+    # Dedup for NEW messages only
+    if topic_rules.get("dedup_new"):
         _dedup_cleanup()
         fp = _make_fingerprint(msg)
         key = (topic_id, fp)
@@ -208,7 +210,7 @@ async def album_handler(event):
 
 
 # =========================
-# Edit handler (stock + optional strict dedup)
+# Edit handler (stock behavior)
 # =========================
 
 @client.on(events.MessageEdited(chats=list(CHANNEL_TOPIC_MAP.keys())))
@@ -219,6 +221,8 @@ async def edit_handler(event):
     if not msg or not topic_id:
         return
 
+    topic_rules = FORWARD_TOPIC_RULES.get(topic_id, {})
+
     old_fwd = FORWARDED_MAP.pop(msg.id, None)
 
     try:
@@ -227,16 +231,16 @@ async def edit_handler(event):
 
         if not allowed_by_topic_rules(msg, topic_id):
             logger.info(
-                "SKIP edit_topic_rules msg_id=%s topic=%s",
-                msg.id,
-                topic_id
+                "SKIP edit_topic_rules topic=%s msg_id=%s",
+                topic_id,
+                msg.id
             )
             return
 
         await safe_forward(msg, topic_id)
 
-        dedup_cfg = DEDUP_TOPIC_RULES.get(topic_id)
-        if dedup_cfg and dedup_cfg.get("dedup_include_edits"):
+        # STRICT dedup: record edited content too
+        if topic_rules.get("dedup_include_edits"):
             fp = _make_fingerprint(msg)
             DEDUP_CACHE[(topic_id, fp)] = time.time()
             logger.debug(
