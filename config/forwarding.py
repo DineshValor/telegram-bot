@@ -9,7 +9,7 @@ Forwarding configuration:
 # =========================
 
 CHANNEL_TOPIC_MAP = {
-    -5291719056: 3077,  # Ingress India 🇮🇳 Test
+    -5291719056: 1,  # Ingress India 🇮🇳 Test
     -1001305415858: 15,       # IngressFS Notifications
 
     -1001170454563: 11079,    # Ingress Official
