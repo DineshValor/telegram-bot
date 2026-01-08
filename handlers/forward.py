@@ -15,10 +15,9 @@ from core.client import client
 from config.env import TARGET_GROUP
 from config.forwarding import CHANNEL_TOPIC_MAP, FORWARD_TOPIC_RULES
 from utils.logger import setup_logger
+from utils.forward_map import save_mapping, get_mapping, delete_mapping
 
 logger = setup_logger()
-
-FORWARDED_MAP = {}
 
 URL_RE = re.compile(r"https?://\S+", re.IGNORECASE)
 
@@ -26,8 +25,7 @@ URL_RE = re.compile(r"https?://\S+", re.IGNORECASE)
 def _is_raw_link_only(msg):
     if not msg.raw_text:
         return False
-    text = msg.raw_text.strip()
-    return bool(URL_RE.fullmatch(text))
+    return bool(URL_RE.fullmatch(msg.raw_text.strip()))
 
 
 def allowed_by_topic_rules(msg, topic_id):
@@ -48,7 +46,7 @@ def allowed_by_topic_rules(msg, topic_id):
         else:
             return rules.get("link", rules.get("text", False))
 
-    # Case 3: Raw URL only (NO preview, NO entities)
+    # Case 3: Raw URL only (no preview, no entities)
     if not msg.media and not msg.text and _is_raw_link_only(msg):
         return rules.get("link", rules.get("text", False))
 
@@ -83,7 +81,14 @@ async def safe_forward(msg, topic_id):
             msg,
             reply_to=topic_id
         )
-        FORWARDED_MAP[msg.id] = fwd.id
+
+        save_mapping(
+            msg.chat_id,
+            msg.id,
+            TARGET_GROUP,
+            fwd.id
+        )
+
         return fwd
 
     except FloodWaitError as e:
@@ -134,7 +139,12 @@ async def album_handler(event):
         )
 
         for src, fwd in zip(event.messages, fwd_msgs):
-            FORWARDED_MAP[src.id] = fwd.id
+            save_mapping(
+                src.chat_id,
+                src.id,
+                TARGET_GROUP,
+                fwd.id
+            )
 
     except Exception as e:
         logger.exception("Album forward failed: %s", e)
@@ -143,21 +153,43 @@ async def album_handler(event):
 @client.on(events.MessageEdited(chats=list(CHANNEL_TOPIC_MAP.keys())))
 async def edit_handler(event):
     msg = event.message
-    topic_id = CHANNEL_TOPIC_MAP.get(event.chat_id)
+    source_chat_id = event.chat_id
 
-    if not msg or not topic_id:
+    if not msg:
         return
 
-    old_fwd = FORWARDED_MAP.pop(msg.id, None)
+    mapping = get_mapping(source_chat_id, msg.id)
+    if not mapping:
+        return
+
+    target_chat_id, target_msg_id = mapping
 
     try:
-        if old_fwd:
-            await client.delete_messages(TARGET_GROUP, old_fwd)
-
-        if not allowed_by_topic_rules(msg, topic_id):
-            return
-
-        await safe_forward(msg, topic_id)
-
+        await client.edit_message(
+            target_chat_id,
+            target_msg_id,
+            msg
+        )
     except Exception as e:
-        logger.exception("Edit handling failed: %s", e)
+        logger.exception("Edit sync failed: %s", e)
+
+
+@client.on(events.MessageDeleted(chats=list(CHANNEL_TOPIC_MAP.keys())))
+async def delete_handler(event):
+    source_chat_id = event.chat_id
+
+    for msg_id in event.deleted_ids:
+        mapping = get_mapping(source_chat_id, msg_id)
+        if not mapping:
+            continue
+
+        target_chat_id, target_msg_id = mapping
+
+        try:
+            await client.delete_messages(
+                target_chat_id,
+                target_msg_id
+            )
+            delete_mapping(source_chat_id, msg_id)
+        except Exception as e:
+            logger.exception("Delete sync failed: %s", e)
