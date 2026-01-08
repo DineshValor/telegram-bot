@@ -38,14 +38,24 @@ CHANNEL_TOPIC_MAP = {
 # =========================
 
 FORWARD_TOPIC_RULES = {
+    11079: {  # Ingress Updates
+        "text": True,
+        "link": True,
+        "photo": True,
+        "video": True,
+        "doc_ext": None,
+        "dedup_new": True,
+        "dedup_include_edits": True,
+    },
+    
     1: {  # XFaction Chat
         "text": True,
         "link": True,
         "photo": True,
         "video": True,
         "doc_ext": None,
-        "dedup_new": True,          # dedup duplicate NEW messages
-        "dedup_include_edits": True, # STRICT MODE (record edits too)
+        "dedup_new": True,
+        "dedup_include_edits": True,
     },
 
     8201: {  # Mission Banners
@@ -54,8 +64,18 @@ FORWARD_TOPIC_RULES = {
         "photo": False,
         "video": False,
         "doc_ext": {".jpg", ".jpeg", ".png", ".zip", ".rar"},
-        "dedup_new": True,          # dedup duplicate NEW messages
-        "dedup_include_edits": True, # STRICT MODE (record edits too)
+        "dedup_new": True,
+        "dedup_include_edits": True,
+    },
+
+    10: {  # BRAGGING RIGHTS
+        "text": False,
+        "link": False,
+        "photo": False,
+        "video": False,
+        "doc_ext": False,
+        "dedup_new": True,
+        "dedup_include_edits": True,
     },
 
     3077: {  # Random Media (SFW)
@@ -64,7 +84,47 @@ FORWARD_TOPIC_RULES = {
         "photo": True,
         "video": True,
         "doc_ext": None,
-        "dedup_new": True,          # dedup duplicate NEW messages
+        "dedup_new": True,
+        "dedup_include_edits": True,
+    },
+    
+    14: {  # Anomaly & MD
+        "text": True,
+        "link": True,
+        "photo": True,
+        "video": True,
+        "doc_ext": None,
+        "dedup_new": True,
+        "dedup_include_edits": True,
+    },
+
+    15: {  # First Saturday
+        "text": True,
+        "link": True,
+        "photo": True,
+        "video": True,
+        "doc_ext": None,
+        "dedup_new": True,
+        "dedup_include_edits": True,
+    },
+
+    9762: {  # Nominations
+        "text": True,
+        "link": True,
+        "photo": True,
+        "video": True,
+        "doc_ext": None,
+        "dedup_new": True,
+        "dedup_include_edits": True,
+    },
+
+    7125: {  # Pokemon Go (Isolated)
+        "text": True,
+        "link": True,
+        "photo": True,
+        "video": True,
+        "doc_ext": None,
+        "dedup_new": True,
         "dedup_include_edits": True,
     },
 }
