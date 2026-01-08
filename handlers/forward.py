@@ -170,6 +170,9 @@ async def forward_handler(event):
 
     await safe_forward(msg, topic_id)
 
+# STRICT dedup: treat edited content as seen
+DEDUP_CACHE[_make_fingerprint(msg)] = time.time()
+
 
 # =========================
 # Album handler (unchanged)
