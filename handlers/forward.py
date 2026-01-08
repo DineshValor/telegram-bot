@@ -29,7 +29,7 @@ URL_RE = re.compile(r"https?://\S+", re.IGNORECASE)
 # =========================
 
 DEDUP_CACHE = {}  # (topic_id, fingerprint) -> timestamp
-DEDUP_TTL = 6 * 60 * 60  # 6 hours
+DEDUP_TTL = 24 * 60 * 60  # 24 hours
 
 
 def _dedup_cleanup():
