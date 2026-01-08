@@ -59,7 +59,12 @@ FORWARD_TOPIC_RULES = {
     },
 
     3077: {  # Random Media (SFW)
-        "dedup_new": True,
+        "text": True,
+        "link": True,
+        "photo": True,
+        "video": True,
+        "doc_ext": None,
+        "dedup_new": True,          # dedup duplicate NEW messages
         "dedup_include_edits": True,
     },
 }
