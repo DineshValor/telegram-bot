@@ -61,4 +61,5 @@ FORWARD_TOPIC_RULES = {
     3077: {  # Random Media (SFW)
         "dedup_new": True,
         "dedup_include_edits": True,
+    },
 }
