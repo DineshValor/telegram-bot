@@ -48,7 +48,7 @@ async def moderation_handler(event):
     except Exception:
         return
 
-    # Resolve forum topic ID (Telethon-safe & version-safe)
+    # Resolve forum topic ID
     reply = msg.reply_to
     topic_id = getattr(reply, "reply_to_top_id", None) or reply.reply_to_msg_id
 
@@ -67,7 +67,7 @@ async def moderation_handler(event):
             if forwarded_allowed is False:
                 await msg.delete()
                 logger.warning(
-                    "Deleted FORWARDED message | topic=%s | user=%s",
+                    "Deleted FORWARDED | topic=%s | user=%s",
                     topic_id,
                     msg.sender_id
                 )
@@ -122,7 +122,25 @@ async def moderation_handler(event):
             return
 
         # =========================
-        # 🎥 VIDEO
+        # 🖼 GIF (must be before video/doc)
+        # =========================
+        if msg.gif:
+            if not rules.get("gif", False):
+                await msg.delete()
+                logger.warning(
+                    "Deleted GIF | topic=%s | user=%s",
+                    topic_id,
+                    msg.sender_id
+                )
+                await send_reason(
+                    topic_id,
+                    "GIFs are not allowed in this topic.",
+                    msg
+                )
+            return
+
+        # =========================
+        # 🎥 VIDEO (non-GIF)
         # =========================
         if msg.video:
             if not rules.get("video", False):
@@ -140,7 +158,7 @@ async def moderation_handler(event):
             return
 
         # =========================
-        # 📦 DOCUMENT
+        # 📦 DOCUMENT (real files)
         # =========================
         if isinstance(media, MessageMediaDocument):
             allowed_ext = rules.get("doc_ext")
@@ -164,7 +182,6 @@ async def moderation_handler(event):
             if allowed_ext is None:
                 return
 
-            # ✅ Allow only specific extensions
             filename = msg.file.name or ""
             ext = "." + filename.lower().split(".")[-1] if "." in filename else ""
 
