@@ -42,18 +42,23 @@ def _dedup_cleanup():
 def _make_fingerprint(msg):
     parts = []
 
-    # Visible content (most important)
+    # 1️⃣ Visible text (most reliable)
     if msg.raw_text:
         parts.append(msg.raw_text.strip())
     elif msg.text:
         parts.append(msg.text.strip())
 
-    # Media identity
+    # 2️⃣ Media type + size (SAFE across all media)
     if msg.media:
         parts.append(type(msg.media).__name__)
+
         if msg.file:
-            parts.append(str(msg.file.id or ""))
-            parts.append(str(msg.file.size or ""))
+            if msg.file.size:
+                parts.append(str(msg.file.size))
+
+            # Fallbacks (safe attributes)
+            if msg.file.name:
+                parts.append(msg.file.name)
 
     raw = "|".join(parts)
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
