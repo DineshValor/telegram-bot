@@ -23,7 +23,7 @@ TOPIC_RULES = {
         "video": True,
         "gif": False,
         "doc_ext": {".jpg", ".jpeg", ".png", ".mp4"},
-        "forwarded_allowed": False,   # delete all forwarded messages
+        "forwarded_allowed": True,   # allowed all forwarded messages
     },
 
     8201: {  # Mission Banners
