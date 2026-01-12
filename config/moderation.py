@@ -5,7 +5,7 @@ TOPIC_RULES = {
         "video": False,
         "gif": False,
         "doc_ext": False,
-        "forwarded_allowed": True,
+        "forwarded_allowed": True, # allowed all forwarded messages
     },
     
     1: {  # XFaction Chat
@@ -23,7 +23,7 @@ TOPIC_RULES = {
         "video": True,
         "gif": False,
         "doc_ext": {".jpg", ".jpeg", ".png", ".mp4"},
-        "forwarded_allowed": True,   # allowed all forwarded messages
+        "forwarded_allowed": None,   # follow normal rules
     },
 
     8201: {  # Mission Banners
@@ -32,6 +32,6 @@ TOPIC_RULES = {
         "video": False,
         "gif": False,
         "doc_ext": {".jpg", ".jpeg", ".png", ".zip", ".rar"},
-        "forwarded_allowed": True,  # allowed all forwarded messages
+        "forwarded_allowed": None,  # follow normal rules
     },
 }
