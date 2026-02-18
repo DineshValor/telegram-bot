@@ -17,7 +17,7 @@ CHANNEL_TOPIC_MAP = {
     -1001008795454: 11079,    # Passcodes Ingress PRIME
     -1001126789733: 11079,    # Ingress Passcodes
     -1001093134636: 11079,    # Ingress Passcodes [RES]
-    -1003307267310: 11079,    # Ingress India 🇮🇳 Passcodes
+    -1003307267310: 11079,    # Ingress India 🇮🇳 Updates
 
     -1001075281753: 8201,     # Mission Banners, Oh My!
     -1001078001228: 8201,     # #MissionProject
@@ -25,7 +25,7 @@ CHANNEL_TOPIC_MAP = {
 
     -1002105354149: 1,        # Ingress World Wide Competition 2025
     -1001167466234: 1,        # NotNiantic Updates
-    -1001077599821: 1,        # Ingress Updates [ENG]
+    #-1001077599821: 1,        # Ingress Updates [ENG]
     -1001402896020: 1,        # News_Hackventscalendar
     -1001851154018: 1,        # Ingress.Plus
 }
