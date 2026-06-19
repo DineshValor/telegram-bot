@@ -1,7 +1,8 @@
 from telethon import TelegramClient
-from telethon.errors import RPCError
+
 
 async def test_proxy(api_id, api_hash, proxy):
+    client = None
 
     try:
         client = TelegramClient(
@@ -12,16 +13,20 @@ async def test_proxy(api_id, api_hash, proxy):
                 proxy["server"],
                 proxy["port"],
                 proxy["secret"]
-            )
+            ),
+            connection_retries=1
         )
 
         await client.connect()
 
-        ok = await client.is_user_authorized()
-
-        await client.disconnect()
-
-        return ok
+        return client.is_connected()
 
     except Exception:
         return False
+
+    finally:
+        try:
+            if client:
+                await client.disconnect()
+        except Exception:
+            pass
