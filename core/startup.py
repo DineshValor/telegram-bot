@@ -7,7 +7,7 @@ from telethon import TelegramClient
 from core.client import client
 from config.env import API_ID, API_HASH, SESSION_NAME
 from utils.logger import setup_logger
-from utils.proxy_manager import fetch_proxies
+from utils.proxy_manager import fetch_proxies, save_proxy
 from utils.proxy_tester import test_proxy
 
 logger = setup_logger()
@@ -100,6 +100,7 @@ def start_bot():
                     logger.info(
                         "Connected using proxy"
                     )
+                    save_proxy(proxy)
 
                     break
 
