@@ -2,7 +2,7 @@ import signal
 import sys
 import asyncio
 
-from core.client import client
+from core.client import get_client
 from utils.logger import setup_logger
 
 logger = setup_logger()
@@ -14,7 +14,8 @@ async def shutdown(sig=None):
         logger.warning("Received signal %s, shutting down...", sig.name)
 
     try:
-        await client.disconnect()
+        client = get_client()
+    await client.disconnect()
         logger.info("Telegram client disconnected cleanly")
     except Exception as e:
         logger.exception("Error during shutdown: %s", e)
@@ -36,6 +37,7 @@ def start_bot():
         )
 
     try:
+        client = get_client()
         client.start()
         logger.info("Telegram bot started successfully")
 
