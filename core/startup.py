@@ -18,17 +18,28 @@ logger = setup_logger()
 
 async def shutdown(sig=None):
     """Gracefully shut down the Telegram client."""
+
     if sig:
-        logger.warning("Received signal %s, shutting down...", sig.name)
+        logger.warning(
+            "Received signal %s, shutting down...",
+            sig.name
+        )
 
     try:
-    client = get_client()
-    await client.disconnect()
-    logger.info("Telegram client disconnected cleanly")
-    except Exception as e:
-        logger.exception("Error during shutdown: %s", e)
+        client = get_client()
 
-    # Stop the asyncio loop cleanly
+        await client.disconnect()
+
+        logger.info(
+            "Telegram client disconnected cleanly"
+        )
+
+    except Exception as e:
+        logger.exception(
+            "Error during shutdown: %s",
+            e
+        )
+
     loop = asyncio.get_running_loop()
     loop.stop()
 
