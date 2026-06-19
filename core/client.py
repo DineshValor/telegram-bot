@@ -144,4 +144,4 @@ def set_client(client):
 
 
 # Backward compatibility
-client = get_client())
+client = get_client()
