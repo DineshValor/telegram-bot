@@ -1,9 +1,12 @@
 import asyncio
 import aiohttp
 import time
+
 from pathlib import Path
-from config.env import (PROXY_REFRESH_HOURS,
-    PROXY_MAX_FAILS,)
+from urllib.parse import (
+    urlparse,
+    parse_qs,
+)
 
 from config.env import (
     PROXY_URL,
@@ -13,11 +16,15 @@ from config.env import (
 
 CACHE_FILE = Path("data/mtproto_proxies.txt")
 
-REFRESH_INTERVAL = (PROXY_REFRESH_HOURS * 60 * 60)
+REFRESH_INTERVAL = (
+    PROXY_REFRESH_HOURS * 60 * 60
+)
 
 MAX_FAILS = PROXY_MAX_FAILS
 
+
 class ProxyManager:
+
     def __init__(self):
         self.proxies = []
         self.current_index = 0
@@ -28,8 +35,11 @@ class ProxyManager:
         self.last_refresh = 0
 
     async def refresh(self):
+
         try:
+
             async with aiohttp.ClientSession() as session:
+
                 async with session.get(
                     PROXY_URL,
                     timeout=30
@@ -39,6 +49,19 @@ class ProxyManager:
                         return False
 
                     text = await resp.text()
+
+            #
+            # Do NOT overwrite cache
+            # with empty downloads
+            #
+            if not text.strip():
+
+                print(
+                    "[PROXY] Empty proxy list "
+                    "received, keeping cache"
+                )
+
+                return False
 
             CACHE_FILE.parent.mkdir(
                 parents=True,
@@ -62,16 +85,20 @@ class ProxyManager:
             return True
 
         except Exception as e:
+
             print(
                 f"[PROXY] Refresh failed: {e}"
             )
+
             return False
 
     def load_cache(self):
+
         if not CACHE_FILE.exists():
             return False
 
         try:
+
             text = CACHE_FILE.read_text(
                 encoding="utf-8"
             )
@@ -86,12 +113,15 @@ class ProxyManager:
             return True
 
         except Exception as e:
+
             print(
                 f"[PROXY] Cache load failed: {e}"
             )
+
             return False
 
     def _parse(self, text):
+
         proxies = []
 
         for line in text.splitlines():
@@ -101,19 +131,44 @@ class ProxyManager:
             if not line:
                 continue
 
-            parts = line.split(":")
-
-            if len(parts) < 3:
-                continue
-
             try:
+
+                parsed = urlparse(line)
+
+                query = parse_qs(
+                    parsed.query
+                )
+
+                host = query.get(
+                    "server",
+                    [None]
+                )[0]
+
+                port = query.get(
+                    "port",
+                    [None]
+                )[0]
+
+                secret = query.get(
+                    "secret",
+                    [None]
+                )[0]
+
+                if (
+                    not host
+                    or not port
+                    or not secret
+                ):
+                    continue
+
                 proxies.append(
                     {
-                        "host": parts[0],
-                        "port": int(parts[1]),
-                        "secret": parts[2],
+                        "host": host,
+                        "port": int(port),
+                        "secret": secret,
                     }
                 )
+
             except Exception:
                 continue
 
@@ -121,11 +176,13 @@ class ProxyManager:
         self.current_index = 0
 
         #
-        # CLEANUP EVERY REFRESH
+        # Reset fail counters
+        # every refresh
         #
         self.fail_counts.clear()
 
-    def mark_dead(self, proxy):
+    def mark_failed(self, proxy):
+
         key = (
             proxy["host"],
             proxy["port"],
@@ -137,6 +194,7 @@ class ProxyManager:
         )
 
     def get_fail_count(self, proxy):
+
         key = (
             proxy["host"],
             proxy["port"],
@@ -146,6 +204,7 @@ class ProxyManager:
         return self.fail_counts.get(key, 0)
 
     def get_next_proxy(self):
+
         if not self.proxies:
             return None
 
@@ -163,12 +222,17 @@ class ProxyManager:
                 proxy
             )
 
+            #
+            # Allow reuse until
+            # fail_count reaches MAX_FAILS
+            #
             if fails < MAX_FAILS:
                 return proxy
 
         return None
 
     async def refresh_loop(self):
+
         while True:
 
             await self.refresh()
