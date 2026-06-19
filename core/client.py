@@ -141,3 +141,7 @@ def get_client():
 def set_client(client):
     global _client
     _client = client
+
+
+# Backward compatibility
+client = get_client())
