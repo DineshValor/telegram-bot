@@ -403,7 +403,6 @@ sudo systemctl start telegram-bot
 Restart bot
 ```
 sudo systemctl restart telegram-bot
-Stop bot
 ```
 Stop bot
 ```
