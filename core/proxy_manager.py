@@ -5,8 +5,10 @@ from pathlib import Path
 from config.env import (PROXY_REFRESH_HOURS,
     PROXY_MAX_FAILS,)
 
-PROXY_URL = (
-    "https://raw.githubusercontent.com/Grim1313/mtproto-for-telegram/refs/heads/master/all_proxies.txt"
+from config.env import (
+    PROXY_URL,
+    PROXY_REFRESH_HOURS,
+    PROXY_MAX_FAILS,
 )
 
 CACHE_FILE = Path("data/mtproto_proxies.txt")
