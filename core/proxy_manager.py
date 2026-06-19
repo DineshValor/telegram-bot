@@ -2,6 +2,8 @@ import asyncio
 import aiohttp
 import time
 from pathlib import Path
+from config.env import (PROXY_REFRESH_HOURS,
+    PROXY_MAX_FAILS,)
 
 PROXY_URL = (
     "https://raw.githubusercontent.com/"
@@ -10,9 +12,9 @@ PROXY_URL = (
 
 CACHE_FILE = Path("data/mtproto_proxies.txt")
 
-REFRESH_INTERVAL = 12 * 60 * 60
-MAX_FAILS = 3
+REFRESH_INTERVAL = (PROXY_REFRESH_HOURS * 60 * 60)
 
+MAX_FAILS = PROXY_MAX_FAILS
 
 class ProxyManager:
     def __init__(self):
