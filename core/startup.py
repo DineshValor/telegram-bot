@@ -5,6 +5,11 @@ import asyncio
 from core.client import client
 from utils.logger import setup_logger
 
+from utils.proxy_manager import fetch_proxies
+from utils.proxy_tester import test_proxy
+from telethon import TelegramClient
+from config.env import API_ID, API_HASH, SESSION_NAME
+
 logger = setup_logger()
 
 
@@ -36,11 +41,48 @@ def start_bot():
         )
 
     try:
-        client.start()
-        logger.info("Telegram bot started successfully")
+    client.start()
+    logger.info("Connected directly")
 
-        # Block until disconnected or shutdown
-        client.run_until_disconnected()
+except Exception:
+    logger.warning("Direct connection failed")
+
+    proxies = fetch_proxies()
+
+    for proxy in proxies:
+
+        try:
+            if loop.run_until_complete(
+                test_proxy(
+                    API_ID,
+                    API_HASH,
+                    proxy
+                )
+            ):
+
+                logger.info(
+                    f"Using proxy {proxy}"
+                )
+
+                proxy_client = TelegramClient(
+                    SESSION_NAME,
+                    API_ID,
+                    API_HASH,
+                    proxy=proxy,
+                    auto_reconnect=True
+                )
+
+                proxy_client.start()
+
+                globals()["client"] = proxy_client
+
+                break
+
+        except Exception:
+            continue
+
+logger.info("Telegram bot started successfully")
+client.run_until_disconnected()
 
     except Exception as e:
         logger.exception("Fatal error: %s", e)
