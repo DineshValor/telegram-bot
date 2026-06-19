@@ -39,3 +39,12 @@ if TELEGRAM_LOG_ENABLED:
 
     if TELEGRAM_LOG_CHAT_ID == 0:
         raise RuntimeError("❌ TELEGRAM_LOG_CHAT_ID cannot be 0")
+
+# MTProto Proxy Config
+PROXY_REFRESH_HOURS = int(
+    os.getenv("PROXY_REFRESH_HOURS", "12")
+)
+
+PROXY_MAX_FAILS = int(
+    os.getenv("PROXY_MAX_FAILS", "3")
+)
