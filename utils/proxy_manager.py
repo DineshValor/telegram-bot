@@ -12,11 +12,13 @@ PROXY_SOURCE = (
 
 def load_cached_proxy():
     if Path(PROXY_FILE).exists():
-        return json.load(open(PROXY_FILE))
+        with open(PROXY_FILE, "r") as f:
+    return json.load(f)
     return None
 
 def save_proxy(proxy):
-    json.dump(proxy, open(PROXY_FILE, "w"))
+    with open(PROXY_FILE, "w") as f:
+    json.dump(proxy, f)
 
 def fetch_proxies():
     r = requests.get(PROXY_SOURCE, timeout=30)
