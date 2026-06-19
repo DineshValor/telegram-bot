@@ -14,9 +14,9 @@ async def shutdown(sig=None):
         logger.warning("Received signal %s, shutting down...", sig.name)
 
     try:
-        client = get_client()
+    client = get_client()
     await client.disconnect()
-        logger.info("Telegram client disconnected cleanly")
+    logger.info("Telegram client disconnected cleanly")
     except Exception as e:
         logger.exception("Error during shutdown: %s", e)
 
