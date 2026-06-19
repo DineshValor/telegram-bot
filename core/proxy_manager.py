@@ -6,8 +6,7 @@ from config.env import (PROXY_REFRESH_HOURS,
     PROXY_MAX_FAILS,)
 
 PROXY_URL = (
-    "https://raw.githubusercontent.com/"
-    "SoliSpirit/mtproto/master/all_proxies.txt"
+    "https://raw.githubusercontent.com/Grim1313/mtproto-for-telegram/refs/heads/master/all_proxies.txt"
 )
 
 CACHE_FILE = Path("data/mtproto_proxies.txt")
