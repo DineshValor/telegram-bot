@@ -1,12 +1,13 @@
 import json
 import requests
 from pathlib import Path
+from urllib.parse import urlparse, parse_qs
 
 PROXY_FILE = "proxy_cache.json"
 
 PROXY_SOURCE = (
     "https://raw.githubusercontent.com/"
-    "SoliSpirit/mtproto/main/proxies.json"
+    "SoliSpirit/mtproto/refs/heads/master/all_proxies.txt"
 )
 
 def load_cached_proxy():
@@ -20,4 +21,25 @@ def save_proxy(proxy):
 def fetch_proxies():
     r = requests.get(PROXY_SOURCE, timeout=30)
     r.raise_for_status()
-    return r.json()
+
+    proxies = []
+
+    for line in r.text.splitlines():
+        line = line.strip()
+
+        if not line:
+            continue
+
+        try:
+            parsed = parse_qs(urlparse(line).query)
+
+            proxies.append({
+                "server": parsed["server"][0],
+                "port": int(parsed["port"][0]),
+                "secret": parsed["secret"][0]
+            })
+
+        except Exception:
+            continue
+
+    return proxies
