@@ -48,3 +48,8 @@ PROXY_REFRESH_HOURS = int(
 PROXY_MAX_FAILS = int(
     os.getenv("PROXY_MAX_FAILS", "3")
 )
+
+PROXY_URL = os.getenv(
+    "PROXY_URL",
+    ""
+)
