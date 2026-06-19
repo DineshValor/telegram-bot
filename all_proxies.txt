@@ -1,3 +1,4 @@
+tg://socks?server=212.58.132.5&port=1080
 tg://proxy?server=46.101.183.119&port=8443&secret=9dedd5043e61e687e83aaae0d1c2b147
 tg://proxy?server=37.27.0.162&port=8888&secret=1ee2a4ae0cf438692ebb99aae176c72f
 tg://proxy?server=gain.independency.mortise.nightshade.trow.pinoyteleseryehd.net&port=8700&secret=eed24391f6becba9d9fabdd0e9ebe62da473332e616d617a6f6e6177732e636f6d
