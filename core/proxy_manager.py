@@ -1,6 +1,5 @@
 import asyncio
 import aiohttp
-import os
 import time
 from pathlib import Path
 
@@ -13,6 +12,7 @@ CACHE_FILE = Path("data/mtproto_proxies.txt")
 
 REFRESH_INTERVAL = 12 * 60 * 60
 
+
 class ProxyManager:
 
     def __init__(self):
@@ -22,9 +22,15 @@ class ProxyManager:
         self.last_refresh = 0
 
     async def refresh(self):
+
         try:
+
             async with aiohttp.ClientSession() as session:
-                async with session.get(PROXY_URL, timeout=30) as resp:
+
+                async with session.get(
+                    PROXY_URL,
+                    timeout=30
+                ) as resp:
 
                     if resp.status != 200:
                         return False
@@ -46,14 +52,18 @@ class ProxyManager:
             self.last_refresh = time.time()
 
             print(
-                f"[PROXY] Loaded "
+                f"[PROXY] Refreshed "
                 f"{len(self.proxies)} proxies"
             )
 
             return True
 
         except Exception as e:
-            print(f"[PROXY] Refresh failed: {e}")
+
+            print(
+                f"[PROXY] Refresh failed: {e}"
+            )
+
             return False
 
     def load_cache(self):
@@ -85,20 +95,22 @@ class ProxyManager:
             if len(parts) < 3:
                 continue
 
-            host = parts[0]
-            port = int(parts[1])
-            secret = parts[2]
+            try:
 
-            proxies.append(
-                {
-                    "host": host,
-                    "port": port,
-                    "secret": secret,
-                }
-            )
+                proxies.append({
+                    "host": parts[0],
+                    "port": int(parts[1]),
+                    "secret": parts[2]
+                })
+
+            except Exception:
+                continue
 
         self.proxies = proxies
+
+        # reset everything every refresh
         self.dead_proxies.clear()
+
         self.current_index = 0
 
     def mark_dead(self, proxy):
@@ -111,12 +123,18 @@ class ProxyManager:
 
         self.dead_proxies.add(key)
 
+        print(
+            "[PROXY] Dead:",
+            proxy["host"],
+            proxy["port"]
+        )
+
     def get_next_proxy(self):
 
-        if not self.proxies:
-            return None
-
         total = len(self.proxies)
+
+        if total == 0:
+            return None
 
         for _ in range(total):
 
