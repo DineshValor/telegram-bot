@@ -23,8 +23,6 @@ def create_direct_client():
     )
 
 
-# ADD BELOW create_direct_client()
-
 def create_mtproto_client(proxy):
 
     return TelegramClient(
@@ -52,6 +50,83 @@ def create_proxy_client():
     client = create_mtproto_client(proxy)
 
     return client, proxy
+
+
+async def connect_with_fallback():
+
+    #
+    # Try direct connection first
+    #
+    try:
+
+        client = create_direct_client()
+
+        await client.connect()
+
+        if await client.is_user_authorized():
+
+            print(
+                "[CLIENT] Direct connection established"
+            )
+
+            set_client(client)
+
+            return client
+
+        await client.disconnect()
+
+    except Exception as e:
+
+        print(
+            f"[CLIENT] Direct connection failed: {e}"
+        )
+
+    #
+    # Fallback to MTProto proxies
+    #
+    while True:
+
+        client, proxy = create_proxy_client()
+
+        if not client:
+            raise RuntimeError(
+                "No usable MTProto proxies available"
+            )
+
+        try:
+
+            print(
+                "[CLIENT] Trying proxy "
+                f"{proxy['host']}:{proxy['port']}"
+            )
+
+            await client.connect()
+
+            if await client.is_user_authorized():
+
+                print(
+                    "[CLIENT] Connected via MTProto "
+                    f"{proxy['host']}:{proxy['port']}"
+                )
+
+                set_client(client)
+
+                return client
+
+            await client.disconnect()
+
+            proxy_manager.mark_failed(proxy)
+
+        except Exception:
+
+            proxy_manager.mark_failed(proxy)
+
+            try:
+                await client.disconnect()
+            except Exception:
+                pass
+
+            continue
 
 
 def get_client():
