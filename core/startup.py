@@ -2,7 +2,15 @@ import signal
 import sys
 import asyncio
 
-from core.client import get_client
+from core.client import (
+    get_client,
+    connect_with_fallback,
+)
+
+from core.proxy_manager import (
+    proxy_manager
+)
+
 from utils.logger import setup_logger
 
 logger = setup_logger()
@@ -26,24 +34,60 @@ async def shutdown(sig=None):
 
 
 def start_bot():
-    logger.info("Starting Telegram bot...")
+
+    logger.info(
+        "Starting Telegram bot..."
+    )
 
     loop = asyncio.get_event_loop()
 
-    # Handle system signals properly
-    for sig in (signal.SIGINT, signal.SIGTERM):
+    #
+    # Signal handlers
+    #
+    for sig in (
+        signal.SIGINT,
+        signal.SIGTERM
+    ):
         loop.add_signal_handler(
-            sig, lambda s=sig: asyncio.create_task(shutdown(s))
+            sig,
+            lambda s=sig:
+            asyncio.create_task(
+                shutdown(s)
+            )
         )
 
     try:
-        client = get_client()
-        client.start()
-        logger.info("Telegram bot started successfully")
 
-        # Block until disconnected or shutdown
+        #
+        # Load cached proxies
+        #
+        proxy_manager.load_cache()
+
+        #
+        # Start 12h refresh task
+        #
+        loop.create_task(
+            proxy_manager.refresh_loop()
+        )
+
+        #
+        # Direct → MTProto fallback
+        #
+        client = loop.run_until_complete(
+            connect_with_fallback()
+        )
+
+        logger.info(
+            "Telegram bot started successfully"
+        )
+
         client.run_until_disconnected()
 
     except Exception as e:
-        logger.exception("Fatal error: %s", e)
+
+        logger.exception(
+            "Fatal error: %s",
+            e
+        )
+
         sys.exit(1)
